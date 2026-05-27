@@ -1,6 +1,6 @@
 # Memo cross-reference
 
-Source: [`LogicFolding-No-Action-Decision-Memo.pdf`](./LogicFolding-No-Action-Decision-Memo.pdf) (v4, 2026-05-27, 16 pages).
+Source: [`LogicFolding-No-Action-Decision-Memo.pdf`](./LogicFolding-No-Action-Decision-Memo.pdf) (v4.1, 2026-05-27, 16 pages). LaTeX source + figure-generation script in [`memo-source/`](./memo-source/).
 
 This index maps the codebase to the memo so anyone reviewing the implementation can verify it faithfully encodes the memo's equations rather than reinterpreting them. The memo itself is bundled in this repository under the same `docs/` directory.
 
