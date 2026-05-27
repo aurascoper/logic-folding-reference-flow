@@ -33,6 +33,8 @@
 
 use rayon::prelude::*;
 
+pub mod mock;
+
 /// Conversion factor from SI seconds to femtoseconds.
 pub const SECONDS_TO_FS: f64 = 1.0e15;
 
@@ -147,7 +149,7 @@ impl PathEvaluator {
         let tax = self.vertical_tax_fs(path.n_vertical_vias, path.n_bond_contacts);
         let margin = path.horizontal_savings_fs - tax;
         let noise = self.params.parasitic_noise_floor_fs;
-        let label = if margin.abs() <= noise {
+        let label = if noise > 0.0 && margin.abs() <= noise {
             DecisionLabel::Marginal
         } else if margin > 0.0 {
             DecisionLabel::Pass
@@ -185,30 +187,3 @@ impl PathEvaluator {
             )
     }
 }
-
-// ============================================================================
-// TODO — operator contribution
-//
-// The mock-path generator used by examples and benchmarks is intentionally
-// not implemented here. The choice of distribution shapes what the engine
-// reveals about the LogicFolding hypothesis:
-//
-//   1. Uniform Δτ_save over [0, max] — symmetric stress test; tells you the
-//      pass rate at a given parasitic budget but not whether the rare
-//      passing paths are short or long.
-//
-//   2. Log-normal Δτ_save — matches empirical horizontal-delay distributions
-//      in real critical-path arrays (heavy right tail of long global wires).
-//      The memo's §7 warning ("only very long global paths pass") becomes
-//      directly visible: the right tail dominates the pass count.
-//
-//   3. Bimodal (local + global) — separately models cell-internal short paths
-//      and inter-module global paths. This is the most diagnostic
-//      distribution for the question the memo raises: is folding a
-//      standard-cell-level scaling law, or a global-wire floorplanning trick?
-//
-// Implement `generate_mock_paths(n, rng)` in `src/mock.rs` (you'll need to
-// create the file and declare `pub mod mock;` here). 5–10 lines of code.
-// Pick one distribution, document why in a comment, and the integration tests
-// in `tests/parasitic_dominance.rs` will start exercising it.
-// ============================================================================
