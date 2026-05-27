@@ -4,6 +4,8 @@ An open reference flow for evaluating LogicFolding-style 3D-native logic folding
 
 **This repository does not assert that LogicFolding is viable.** Per the memo's final decision, the current public evidence state warrants `NO TRADE / NO ALLOCATION / NO ENGINEERING ADOPTION`. This codebase exists to make the methodology *falsifiable* on public PDKs (SkyWater 130 nm, GF180) and public benchmark RTL, so that the third reopen trigger — *an open reference flow demonstrating reproducible 3D partitioning, proxy thermal extraction, and verification on public benchmarks* — has a concrete starting point.
 
+📄 **The source memo lives in [`docs/LogicFolding-No-Action-Decision-Memo.pdf`](./docs/LogicFolding-No-Action-Decision-Memo.pdf)** (16 pages). Equation-by-equation cross-reference to this codebase: [`docs/MEMO_INDEX.md`](./docs/MEMO_INDEX.md).
+
 ## Architecture
 
 ```

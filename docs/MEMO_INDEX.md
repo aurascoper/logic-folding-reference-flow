@@ -1,8 +1,8 @@
 # Memo cross-reference
 
-Source: `LogicFolding-No-Action-Decision-Memo.pdf` (v4, 2026-05-27).
+Source: [`LogicFolding-No-Action-Decision-Memo.pdf`](./LogicFolding-No-Action-Decision-Memo.pdf) (v4, 2026-05-27, 16 pages).
 
-This index maps the codebase to the memo so anyone reviewing the implementation can verify it faithfully encodes the memo's equations rather than reinterpreting them.
+This index maps the codebase to the memo so anyone reviewing the implementation can verify it faithfully encodes the memo's equations rather than reinterpreting them. The memo itself is bundled in this repository under the same `docs/` directory.
 
 ## Equation map
 
