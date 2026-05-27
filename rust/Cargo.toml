@@ -1,0 +1,21 @@
+[package]
+name = "logic_folding_core"
+version = "0.0.1"
+edition = "2021"
+description = "Vectorised path-level break-even evaluator for LogicFolding open reference flow (memo §7, Eq. 2)."
+license = "Apache-2.0"
+
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+[dependencies]
+rayon = "1.10"
+
+[dev-dependencies]
+rand = "0.8"
+rand_distr = "0.4"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
