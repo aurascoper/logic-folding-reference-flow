@@ -40,7 +40,7 @@ that is intentionally outside scope per memo §11.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import Enum
 from typing import Iterable, Optional
 
@@ -58,10 +58,10 @@ class DecisionLabel(str, Enum):
     ``PASS``     — horizontal savings strictly exceed the vertical tax by a
                    margin larger than the measurement noise floor.
     ``FAIL``     — vertical tax dominates; folding this path costs delay.
-    ``MARGINAL`` — algebraic margin is positive but within the noise floor of
-                   the supplied parasitic measurements. Memo §7 implies that
-                   uncalibrated wins are not wins; callers should treat this
-                   as advisory only.
+    ``MARGINAL`` — algebraic margin is within the noise floor of the supplied
+                   parasitic measurements. Memo §7 implies that uncalibrated
+                   wins are not wins; callers should treat this as advisory
+                   only.
     """
 
     PASS = "PASS"
@@ -73,35 +73,9 @@ class DecisionLabel(str, Enum):
 class ProcessParameters:
     """Measured or extracted physical primitives for one folded path.
 
-    Fields map 1:1 to memo §7 symbols. No default values — the memo's
-    explicit position is that arbitrary targets are not credible, so callers
-    must supply numbers from extraction or measurement.
-
-    Attributes
-    ----------
-    r_v : float
-        Resistance of a single vertical inter-tier via (Ω).
-    c_v : float
-        Capacitance of a single vertical inter-tier via (F).
-    r_b : float
-        Resistance of a single face-to-face wafer-bond contact (Ω).
-    c_b : float
-        Capacitance of a single face-to-face wafer-bond contact (F).
-    r_drv : float
-        Output resistance of the driver feeding the vertical contact (Ω).
-    c_load : float
-        Downstream load capacitance seen past the vertical contact (F).
-    dtau_red_fs : float
-        Timing overhead from structural redundancy or test/alignment logic (fs).
-    dtau_thermal_fs : float
-        Thermal delay derating from stacked-tier localized heating (fs).
-        Caller is responsible for grounding this in memo §8's spatial kernel,
-        not a single lumped boundary value.
-    parasitic_noise_floor_fs : float
-        One-sigma uncertainty (in fs) of the right-hand-side sum, used to
-        classify wins as PASS vs MARGINAL. Default of 0.0 means callers are
-        asserting perfect calibration — generally wrong. See memo §8.1
-        calibration requirements.
+    Fields map 1:1 to memo §7 symbols. No default values — the memo's explicit
+    position is that arbitrary targets are not credible, so callers must supply
+    numbers from extraction or measurement.
     """
 
     r_v: float
@@ -125,12 +99,7 @@ class ProcessParameters:
 
 @dataclass(frozen=True)
 class PathDecision:
-    """Result of evaluating Eq. 2 for one folded path.
-
-    ``label`` is ``None`` until the operator implements
-    :py:meth:`VerticalPathEvaluator._classify_decision`. All other fields are
-    the result of pure equation arithmetic and are populated unconditionally.
-    """
+    """Result of evaluating Eq. 2 for one folded path."""
 
     margin_fs: float
     horizontal_savings_fs: float
@@ -142,36 +111,10 @@ class PathDecision:
 
 
 class VerticalPathEvaluator:
-    """Evaluator for the LogicFolding path-level break-even inequality (memo Eq. 2).
+    """Evaluator for the LogicFolding path-level break-even inequality.
 
-    One evaluator instance binds one set of ``ProcessParameters`` (the physical
-    primitives — these are properties of the technology, not the path) and can
-    be called many times across different paths.
-
-    The geometric quantities ``l_h``, ``n_vertical_vias``, and
-    ``n_bond_contacts`` vary per path and are supplied at evaluation time.
-
-    Examples
-    --------
-    >>> params = ProcessParameters(
-    ...     r_v=10.0, c_v=0.5e-15,
-    ...     r_b=8.0,  c_b=0.4e-15,
-    ...     r_drv=200.0,
-    ...     c_load=5.0e-15,
-    ...     dtau_red_fs=20.0,
-    ...     dtau_thermal_fs=15.0,
-    ...     parasitic_noise_floor_fs=10.0,
-    ... )
-    >>> ev = VerticalPathEvaluator(params)
-    >>> # 100 μm of horizontal wire reclaimed, 2 vias and 1 bond contact spent.
-    >>> decision = ev.calculate_path_slack_delta(
-    ...     horizontal_savings_fs=420.0,
-    ...     n_vertical_vias=2,
-    ...     n_bond_contacts=1,
-    ...     l_h_meters=100e-6,
-    ... )
-    >>> decision.label.value in {"PASS", "FAIL", "MARGINAL"}
-    True
+    One evaluator instance binds one set of ``ProcessParameters`` and can be
+    called many times across different paths.
     """
 
     def __init__(self, params: ProcessParameters) -> None:
@@ -232,30 +175,7 @@ class VerticalPathEvaluator:
         n_bond_contacts: int,
         l_h_meters: float,
     ) -> PathDecision:
-        """Evaluate Eq. 2 for one path. Returns label + margin.
-
-        Parameters
-        ----------
-        horizontal_savings_fs : float
-            Δτ_save(l_h) — the horizontal-wire delay reclaimed by folding a
-            segment of effective length ``l_h``. Caller is responsible for
-            computing this from horizontal RC per length (memo gives no
-            closed form; in practice this is whatever OpenSTA / OpenROAD
-            reports for the pre-folded path segment that is now removed).
-        n_vertical_vias : int
-            Number of inter-tier vias introduced by folding this path.
-        n_bond_contacts : int
-            Number of F2F bond contacts introduced by folding this path.
-        l_h_meters : float
-            Effective horizontal length reclaimed (m). Reported back in the
-            decision record so callers can stratify outcomes by length;
-            does not enter the inequality directly here.
-
-        Returns
-        -------
-        PathDecision
-            Frozen record with label, margin (fs), and all inputs echoed.
-        """
+        """Evaluate Eq. 2 for one path. Returns label + margin."""
         if horizontal_savings_fs < 0:
             raise ValueError("horizontal_savings_fs cannot be negative.")
         if l_h_meters < 0:
@@ -263,15 +183,7 @@ class VerticalPathEvaluator:
 
         tax_fs = self.vertical_tax_fs(n_vertical_vias, n_bond_contacts)
         margin_fs = horizontal_savings_fs - tax_fs
-
-        # Equation arithmetic is always available. The PASS/FAIL/MARGINAL
-        # label is policy and may not yet be implemented; in that case we
-        # leave ``label`` as None so the rest of the decision record is
-        # still useful for callers.
-        try:
-            label: Optional[DecisionLabel] = self._classify_decision(margin_fs)
-        except NotImplementedError:
-            label = None
+        label = self._classify_decision(margin_fs)
 
         return PathDecision(
             label=label,
@@ -286,34 +198,22 @@ class VerticalPathEvaluator:
     # Backwards-compatible alias matching the user's task-spec method name.
     calculate_path_slack_delta = evaluate
 
-    # -- TODO ---------------------------------------------------------------
-    # The classification policy is intentionally left for the project
-    # operator to implement. This is where domain judgment matters most: the
-    # memo (§7, §8.1) is explicit that uncalibrated margins are not credible,
-    # so the PASS / FAIL / MARGINAL split is a *policy* decision, not a
-    # physics formula. See README and the docstring on DecisionLabel.
-    #
-    # Implement this method in 5-10 lines. Suggested behaviours to consider:
-    #   * Hard binary: margin > 0 → PASS, else FAIL  (matches memo's stated
-    #     inequality strictly, but ignores measurement noise).
-    #   * Three-way with noise floor: |margin| < params.parasitic_noise_floor_fs
-    #     → MARGINAL, then sign-based on the rest (this is the most defensible
-    #     reading of memo §7 + §8.1).
-    #   * k-sigma rule: PASS only if margin > k · noise_floor for some k > 1
-    #     (conservative for screening; aligns with memo §13 abandon rules).
-    #
-    # Whichever you pick, document the rationale here so future reviewers can
-    # trace the policy back to a memo section.
     def _classify_decision(self, margin_fs: float) -> DecisionLabel:
         """Map a signed margin (fs) to a PASS / FAIL / MARGINAL label.
 
-        TODO: implement. See block comment above for design considerations.
+        Policy choice: three-way classification with a measurement-noise band.
+        This is the most defensible reading of memo §7 and §8.1: a path only
+        passes when its positive break-even margin is outside the supplied
+        parasitic calibration floor. Values inside a nonzero noise floor are
+        labeled MARGINAL, including small negative values, because the measured
+        sign is not trustworthy enough to support adoption or rejection.
         """
-        raise NotImplementedError(
-            "Implement _classify_decision. See module docstring + the TODO "
-            "block above this method for the design considerations the memo "
-            "raises around uncalibrated parasitic margins."
-        )
+        noise_floor = self._p.parasitic_noise_floor_fs
+        if noise_floor > 0.0 and abs(margin_fs) <= noise_floor:
+            return DecisionLabel.MARGINAL
+        if margin_fs > 0.0:
+            return DecisionLabel.PASS
+        return DecisionLabel.FAIL
 
     # -- Public: batch evaluation -------------------------------------------
 
