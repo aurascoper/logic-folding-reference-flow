@@ -81,4 +81,4 @@ Per memo §11: *"Such a flow would only answer 'is the methodology coherent?' It
 
 ## License
 
-Open. Recommended: Apache-2.0 (compatible with SkyWater 130 nm and GF180 PDK license terms).
+Licensed under the [Apache License, Version 2.0](LICENSE). See `NOTICE` for attribution. The choice is intentional: Apache-2.0 includes an explicit patent grant from contributors, which matters for a flow that touches partitioning and physical-design techniques where patent encumbrance is common.
