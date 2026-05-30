@@ -6,7 +6,7 @@ An open reference flow for evaluating LogicFolding-style 3D-native logic folding
 
 📄 **The source memo lives in [`docs/LogicFolding-No-Action-Decision-Memo.pdf`](./docs/LogicFolding-No-Action-Decision-Memo.pdf)** (16 pages). Equation-by-equation cross-reference to this codebase: [`docs/MEMO_INDEX.md`](./docs/MEMO_INDEX.md).
 
-🔭 **Trigger watch:** [`docs/TRIGGER_WATCH.md`](./docs/TRIGGER_WATCH.md) logs public LogicFolding developments and scores each against the memo's three reopen triggers. As of 2026-05-29, none has fired — the no-action decision stands.
+🔭 **Trigger watch:** [`docs/TRIGGER_WATCH.md`](./docs/TRIGGER_WATCH.md) logs public LogicFolding developments and scores each against the memo's three reopen triggers. As of 2026-05-30, none has fired and the no-action decision stands.
 
 📝 **Companion writeup:** [*The Most Useful Semiconductor Paper I Wrote This Year Says Don't Buy It*](https://aurascoper.substack.com/p/the-most-useful-semiconductor-paper) — defensive-due-diligence framing of the memo for the institutional buy-side and boutique semiconductor-analysis audience.
 
@@ -43,6 +43,12 @@ An open reference flow for evaluating LogicFolding-style 3D-native logic folding
 | Cost / Perf-per-watt (Eq. 5) | Compose value score from supplied inputs        | Replace teardown cost data              |
 
 The flow only answers "is the methodology coherent?" Per the memo, it does not answer "does it work at 5 nm-class active logic?"
+
+## Deliberately unmodeled: stacked-die yield and inter-wafer variation
+
+One physical dimension is omitted by design: yield across a bonded stack, and the parametric variation between layers that compounds when two independently processed wafers are folded together. Modeling it honestly requires per-layer parametric distributions and a bonding-yield figure, and those numbers exist only inside a foundry PDK. A public PDK disclosure for dual-active-logic stacking is precisely the memo's **Trigger B** (see [`docs/TRIGGER_WATCH.md`](./docs/TRIGGER_WATCH.md)), which has not fired. Until it does, any yield or variation term in the break-even calculation would be a slider over invented data; the value of this flow is that every input it consumes is one a reviewer can independently obtain on a public PDK.
+
+When a teardown does arrive (**Trigger A**, expected no earlier than the fall 2026 Mate 90 / Kirin 9050 shipment), inter-wafer process variation and stacked-die yield join sustained-thermal behavior and the fraction of logic actually folded on the measurement checklist. The 2026-05-30 trigger-watch entry logs this as a teardown variable rather than a model parameter.
 
 ## Layout
 
