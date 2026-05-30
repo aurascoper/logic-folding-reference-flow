@@ -45,3 +45,37 @@ Two items strengthen, rather than challenge, the existing thesis:
 ### Net
 
 No code or equation change is warranted by this news cycle: the physics and the verdict are unchanged. This entry records that the memo's monitoring is current as of 2026-05-29 and that the pre-registered triggers held under a full week of public claims.
+
+---
+
+## 2026-05-30 — status: all triggers OPEN (EDA-displacement update)
+
+Prompted by the WSJ piece ["Huawei Says It Has Workaround to Match Leading Chips"](https://www.wsj.com/tech/huawei-says-it-has-workaround-to-match-leading-chips-c6075fd1) and the analyst commentary around it. No trigger fired; the 2026-05-29 verdict stands. This entry records one net-new thread (EDA-tool displacement) and a vendor self-admission that corroborates the memo.
+
+### Timeline
+
+| Date | Event | Sources |
+|------|-------|---------|
+| 2026-05-26 | On a Tau Scaling panel, **Handel H. Jones** (CEO, International Business Strategies) argues that optimizing at the system level on time "will dramatically change the capability requirements for the EDA vendors" — the tools made by **Cadence** and **Synopsys** that draw these blueprints. Frames LogicFolding as an EDA-displacement story and, for a sanctioned Huawei, a forced build-your-own-EDA dependency. | [Technology.org](https://www.technology.org/2026/05/29/huawei-tau-scaling-logicfolding-chips/), [Reuters](https://www.reuters.com/world/asia-pacific/huawei-proposes-new-path-chip-development-amid-us-sanctions-2026-05-25/) |
+| 2026-05-25 | He Tingbo **acknowledges the two hurdles directly**: the need for new Tau-suited design tools, and preventing overheating "from mobile chips to large AI data centers." Vendor concession on exactly the memo's §7 (tooling / floorplanning) and §8 (thermal). | [Reuters](https://www.reuters.com/world/asia-pacific/huawei-proposes-new-path-chip-development-amid-us-sanctions-2026-05-25/) |
+| 2026-05-26 | Futurum (Brendan Burke): density gain ≈ "three years of traditional scaling" at a fixed node, but toolchain / ecosystem "remain immature" and **inter-wafer process variation** is an open risk; TSMC / Intel hybrid-bonding roadmaps are "closing ground." | [Futurum](https://futurumgroup.com/insights/does-huaweis-tau-scaling-law-challenge-the-logic-leadership-of-intel-and-tsmc/) |
+| 2026-05-27 | Vik's Newsletter pins the baseline: **155 → 238 MTr/mm²** for the +53.5%, and makes the node-agnostic point — folding is available to anyone, so applied on a leading-edge node by an EUV holder it widens the lead rather than closing it. | [Vik's Newsletter](https://www.viksnewsletter.com/p/huaweis-tau-scaling-is-really-hybrid-bonding-bet) |
+
+### Scoring
+
+**Trigger A — Shipping teardown: NOT FIRED.**
+Still nothing shipped. Adds one item to the eventual teardown checklist: yield / inter-wafer process variation across the bonded stack, alongside sustained-thermal and fraction-of-logic-folded.
+
+**Trigger B — Foundry / PDK disclosure: NOT FIRED.**
+The WSJ "workaround" framing is strategy, not silicon: no foundry, node, PDK, or yield figure disclosed. B untouched.
+
+**Trigger C — Open reference flow: NOT FIRED (still the closest movement).**
+The EDA-displacement thread gives the Peking University 3D-EDA tool concrete commercial stakes — the gap Cadence / Synopsys will not fill for a sanctioned customer. But it remains a prototype on no public PDK. C moves marginally closer without meeting the bar.
+
+### Corroboration of the memo's reasoning (does not change the verdict)
+
+He Tingbo's own admission of the tooling and thermal hurdles restates memo §7 and §8 from the vendor side. The node-agnostic critique (Vik's Newsletter, Futurum) reinforces §7's floorplanning reading: a technique any EUV holder can also apply is co-design leverage, available to the leaders too, rather than a unilateral density law.
+
+### Net
+
+No code or equation change. The new content is strategic (EDA toolchain) rather than physical, and the one physical addition (inter-wafer variation) is a teardown variable to check in the fall, not a fired trigger. Monitoring current as of 2026-05-30.
