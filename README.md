@@ -14,9 +14,9 @@ An open reference flow for evaluating LogicFolding-style 3D-native logic folding
 
 ```
                   +-----------------------------------+
-                  |  PYTHON ORCHESTRATOR / OpenROAD   |
-                  |  - Ingests Verilog, LEF/DEF       |
-                  |  - Extracts timing path arrays    |
+                  |     PYTHON REFERENCE EVALUATOR    |
+                  |  - memo Eq. 2, full form (§7)     |
+                  |  - in: extracted RC + mock paths  |
                   +-----------------+-----------------+
                                     |
             +-----------------------+-----------------------+
@@ -24,14 +24,32 @@ An open reference flow for evaluating LogicFolding-style 3D-native logic folding
             v                                               v
 +-----------------------+                       +-----------------------+
 |     RUST ENGINE       |                       |     JULIA ENGINE      |
-|  (Via PyO3 bindings)  |                       |  (Via PythonCall)     |
+|  (PyO3 planned)       |                       |  (PythonCall planned) |
 |                       |                       |                       |
-|  - Discrete Graph     |                       |  - Continuous Thermal |
-|    Partitioning       |                       |    Convolution        |
-|  - Math-constrained   |                       |  - APC State-Space    |
-|    Path-Level Loops   |                       |    Stability Model    |
+|  - Abbreviated Eq. 2  |                       |  - FFT thermal conv.  |
+|    break-even gate    |                       |    (§8, Eq. 3)        |
+|  - mock-path sweep    |                       |  - APC + is_diverging |
+|    (rayon-parallel)   |                       |    (§9, Eq. 4)        |
 +-----------------------+                       +-----------------------+
 ```
+
+> **On OpenROAD / OpenSTA.** These define the unit conventions the flow speaks
+> (ohms, farads, femtoseconds) and are its intended *2D baseline anchor* — the
+> flat, planar source of real per-path RC and slack. OpenROAD does flat 2D
+> place-and-route; it does **not** perform the 3D folding, and the flow does not
+> ask it to. The Verilog / LEF / DEF ingestion front-end is **not yet wired**:
+> today the engines consume supplied or extracted parameters and synthetic
+> mock-path ensembles, never parsed silicon layouts. Building that front-end on
+> a public PDK is precisely the memo's Trigger C, and the reason this repository
+> exists.
+
+> **The two engines are isolated mathematical test-beds, not a wired toolchain.**
+> The Rust crate (`rlib`/`cdylib`, no `pyo3` dependency yet) sweeps the
+> *abbreviated* Eq. 2 over synthetic mock paths with `rayon`; the Julia module
+> runs the §8 FFT thermal kernel and the §9 EWMA APC loop, whose `is_diverging`
+> screen trips on controller divergence under delayed metrology — not on thermal
+> runaway. Per both files' own headers this makes the methodology *coherent*, not
+> *feasible*: passing the gate is necessary, never sufficient.
 
 ## Scope of evidence this flow can produce
 
