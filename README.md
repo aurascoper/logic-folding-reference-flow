@@ -37,11 +37,14 @@ An open reference flow for evaluating LogicFolding-style 3D-native logic folding
 > (ohms, farads, femtoseconds) and are its intended *2D baseline anchor* — the
 > flat, planar source of real per-path RC and slack. OpenROAD does flat 2D
 > place-and-route; it does **not** perform the 3D folding, and the flow does not
-> ask it to. The Verilog / LEF / DEF ingestion front-end is **not yet wired**:
-> today the engines consume supplied or extracted parameters and synthetic
-> mock-path ensembles, never parsed silicon layouts. Building that front-end on
-> a public PDK is precisely the memo's Trigger C, and the reason this repository
-> exists.
+> ask it to. The Verilog / LEF / DEF ingestion now has a **contract and recipe,
+> not yet a live run**: `python/src/logic_folding_reference/baseline.py` parses
+> this flow's `logic-folding-baseline/v0` schema into the Eq. 2 engine, and
+> `flows/sta_dump.tcl` is the OpenROAD recipe that emits it. Producing real
+> numbers still requires an operator to run OpenROAD on a public PDK; the
+> committed fixture is an illustrative sample, not silicon. Closing that last
+> step on a public PDK is precisely the memo's Trigger C, and the reason this
+> repository exists.
 
 > **The two engines are isolated mathematical test-beds, not a wired toolchain.**
 > The Rust crate (`rlib`/`cdylib`, no `pyo3` dependency yet) sweeps the
@@ -70,9 +73,10 @@ When a teardown does arrive (**Trigger A**, expected no earlier than the fall 20
 
 ## Layout
 
-- `python/` — Orchestrator. Houses `VerticalPathEvaluator` (`src/logic_folding_reference/core_solver.py`) implementing the path-level break-even inequality from memo Eq. 2, plus a pytest suite.
+- `python/` — Eq. 2 engine + 2D-baseline ingestion. `core_solver.py` holds `VerticalPathEvaluator` (the path-level break-even inequality, memo §7 Eq. 2); `baseline.py` parses the `logic-folding-baseline/v0` contract (OpenROAD / OpenSTA output) into that engine and joins it to the 3D tax. Pytest suite included.
 - `rust/` — `logic_folding_core` crate. Vectorized `PathEvaluator` with rayon-parallel evaluation across large mock path arrays; intended as a PyO3 target.
 - `julia/` — `thermal_apc_solver.jl`. FFT-based spatial-temporal thermal convolution and EWMA run-to-run state-space simulation with variable metrology delay.
+- `flows/` — `sta_dump.tcl`, the OpenROAD / OpenSTA recipe that emits the `logic-folding-baseline/v0` schema from a real placed design on a public PDK. This is the live Trigger-C step; see `flows/README.md`.
 - `docs/` — Cross-reference to the source memo and section anchors.
 
 ## Quick start

@@ -1,0 +1,85 @@
+{
+  "schema": "logic-folding-baseline/v0",
+  "pdk": "sky130hd",
+  "design": "gcd",
+  "corner": "tt_025C_1v80",
+  "_note": "Illustrative sample, not silicon. Numbers are legible stand-ins in sky130hd-style units so the parser + join have a committed target before OpenROAD is wired (memo Trigger C). Regenerate with flows/sta_dump.tcl on a real build.",
+  "units": {"time": "ns", "resistance": "kohm", "capacitance": "pF", "length": "um"},
+  "paths": [
+    {
+      "startpoint": "_reg_0_/CLK",
+      "endpoint": "_out_reg_7_/D",
+      "path_group": "clk",
+      "path_type": "max",
+      "slack": 0.182,
+      "arrival": 2.418,
+      "required": 2.600,
+      "driver_resistance": 1.95,
+      "load_capacitance": 0.0042,
+      "segments": [
+        {"pin": "_reg_0_/Q",   "net": null,    "layer": null,   "incr_delay": 0.121, "wire_length": 0.0,  "is_wire": false},
+        {"pin": "_412_/A",     "net": "_088_", "layer": "met4", "incr_delay": 0.244, "wire_length": 38.6, "is_wire": true},
+        {"pin": "_412_/X",     "net": null,    "layer": null,   "incr_delay": 0.090, "wire_length": 0.0,  "is_wire": false},
+        {"pin": "_415_/B",     "net": "_091_", "layer": "met5", "incr_delay": 0.301, "wire_length": 52.1, "is_wire": true},
+        {"pin": "_415_/X",     "net": null,    "layer": null,   "incr_delay": 0.088, "wire_length": 0.0,  "is_wire": false},
+        {"pin": "_out_reg_7_/D","net": "_104_", "layer": "met2", "incr_delay": 0.063, "wire_length": 6.4,  "is_wire": true}
+      ]
+    },
+    {
+      "startpoint": "_reg_3_/CLK",
+      "endpoint": "_reg_4_/D",
+      "path_group": "clk",
+      "path_type": "max",
+      "slack": 0.951,
+      "arrival": 1.649,
+      "required": 2.600,
+      "driver_resistance": 2.10,
+      "load_capacitance": 0.0019,
+      "segments": [
+        {"pin": "_reg_3_/Q", "net": null,    "layer": null,   "incr_delay": 0.118, "wire_length": 0.0, "is_wire": false},
+        {"pin": "_390_/A1",  "net": "_061_", "layer": "met1", "incr_delay": 0.041, "wire_length": 3.2, "is_wire": true},
+        {"pin": "_390_/X",   "net": null,    "layer": null,   "incr_delay": 0.072, "wire_length": 0.0, "is_wire": false},
+        {"pin": "_reg_4_/D", "net": "_063_", "layer": "met1", "incr_delay": 0.038, "wire_length": 2.7, "is_wire": true}
+      ]
+    },
+    {
+      "startpoint": "_reg_1_/CLK",
+      "endpoint": "_reg_9_/D",
+      "path_group": "clk",
+      "path_type": "max",
+      "slack": -0.064,
+      "arrival": 2.664,
+      "required": 2.600,
+      "driver_resistance": 1.78,
+      "load_capacitance": 0.0051,
+      "segments": [
+        {"pin": "_reg_1_/Q",  "net": null,    "layer": null,   "incr_delay": 0.124, "wire_length": 0.0,  "is_wire": false},
+        {"pin": "_501_/A",    "net": "_140_", "layer": "met5", "incr_delay": 0.357, "wire_length": 61.9, "is_wire": true},
+        {"pin": "_501_/X",    "net": null,    "layer": null,   "incr_delay": 0.094, "wire_length": 0.0,  "is_wire": false},
+        {"pin": "_508_/C",    "net": "_146_", "layer": "met4", "incr_delay": 0.288, "wire_length": 44.3, "is_wire": true},
+        {"pin": "_508_/X",    "net": null,    "layer": null,   "incr_delay": 0.091, "wire_length": 0.0,  "is_wire": false},
+        {"pin": "_reg_9_/D",  "net": "_150_", "layer": "met3", "incr_delay": 0.155, "wire_length": 19.8, "is_wire": true}
+      ]
+    },
+    {
+      "startpoint": "_loc_reg_5_/CLK",
+      "endpoint": "_loc_reg_2_/D",
+      "path_group": "clk",
+      "path_type": "max",
+      "_note": "Local-dominated path: every net arc is a short on-tier hop below the 25 ps fold threshold, so Policy 2 reclaims zero from it (memo §7 stratification).",
+      "slack": 1.402,
+      "arrival": 1.198,
+      "required": 2.600,
+      "driver_resistance": 2.34,
+      "load_capacitance": 0.0016,
+      "segments": [
+        {"pin": "_loc_reg_5_/Q", "net": null,    "layer": null,   "incr_delay": 0.115, "wire_length": 0.0, "is_wire": false},
+        {"pin": "_277_/A",       "net": "_031_", "layer": "met1", "incr_delay": 0.012, "wire_length": 1.1, "is_wire": true},
+        {"pin": "_277_/X",       "net": null,    "layer": null,   "incr_delay": 0.061, "wire_length": 0.0, "is_wire": false},
+        {"pin": "_281_/B",       "net": "_034_", "layer": "met1", "incr_delay": 0.018, "wire_length": 1.6, "is_wire": true},
+        {"pin": "_281_/X",       "net": null,    "layer": null,   "incr_delay": 0.059, "wire_length": 0.0, "is_wire": false},
+        {"pin": "_loc_reg_2_/D", "net": "_037_", "layer": "met2", "incr_delay": 0.009, "wire_length": 0.8, "is_wire": true}
+      ]
+    }
+  ]
+}
