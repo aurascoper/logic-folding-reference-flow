@@ -1,42 +1,37 @@
-# flows/sta_dump.tcl — 2D baseline dump for the LogicFolding reference flow.
+# flows/sta_dump.tcl — 2D timing baseline dump for the LogicFolding flow.
 #
-# REPRODUCTION RECIPE, not a CI-exercised step. It runs inside OpenROAD
-# (which embeds OpenSTA) and emits this flow's stable contract,
-# schema "logic-folding-baseline/v0", consumed by
-# logic_folding_reference.baseline.parse_baseline_report.
+# Runs inside OpenROAD (which embeds OpenSTA) and emits this flow's stable
+# contract, schema "logic-folding-baseline/v0", consumed by
+# logic_folding_reference.baseline.parse_baseline_report. Geometry (real routed
+# wire_length) is filled in separately by flows/odb_wirelength.py +
+# baseline.merge_net_lengths. STA gives the time; odb gives the space.
 #
-# Why a recipe and not wired code: per memo §11 / Trigger C, a reviewer must be
-# able to reproduce the 2D baseline on a PUBLIC PDK with standard tooling. This
-# script depends on a local OpenROAD build + a PDK (sky130hd) + a sample design;
-# none of those live in the repo. The Python parser is what stays green in CI;
-# this file is what you run to regenerate the committed sample.
+# ============================================================================
+#  DRAFT — VERIFY BEFORE TRUSTING. The per-path arc walk in section 5 is written
+#  against the documented OpenSTA Tcl API but has NOT been executed against a
+#  live build (the repo ships no toolchain/PDK). Accessors that vary by
+#  OpenROAD/OpenSTA version are marked `VERIFY:`; confirm each on your build
+#  (e.g. `openroad> help get_property`) before relying on the output. See the
+#  WI-2 verification checklist in flows/LIVE_RUN.md.
+# ============================================================================
 #
-# Commands used below are the documented OpenROAD interface
-# (https://openroad.readthedocs.io): read_lef / read_liberty / read_verilog /
-# link_design / read_sdc / set_wire_rc / estimate_parasitics / report_checks /
-# report_wire_length. Accessor names on timing-path objects vary slightly by
-# OpenROAD version — the one version-sensitive spot is flagged TODO(operator)
-# below; verify it against your build, which is exactly why the schema is ours
-# and not OpenSTA's native JSON.
-#
-# Usage:
+# Usage (paths below assume an OpenROAD-flow-scripts checkout; cd into ./flow):
 #   openroad -no_init -exit flows/sta_dump.tcl \
-#       -design gcd -pdk sky130hd \
 #       > python/tests/fixtures/sky130_gcd_baseline.json
-#
-# (Wire the file paths below to your PDK + design, e.g. an OpenROAD-flow-scripts
-#  results directory.)
+#   2>sta_dump.log   # warnings (empty-segment paths, etc.) go to stderr
 
 # ---- 0. Inputs (edit for your environment) ---------------------------------
 set DESIGN     "gcd"
 set PDK        "sky130hd"
 set CORNER     "tt_025C_1v80"
-set ALL_LEFS   [list "platforms/sky130hd/lef/sky130_fd_sc_hd.tlef" \
-                     "platforms/sky130hd/lef/sky130_fd_sc_hd_merged.lef"]
-set ALL_LIBS   [list "platforms/sky130hd/lib/sky130_fd_sc_hd__tt_025C_1v80.lib"]
-set NETLIST    "results/${DESIGN}.v"
-set FLOORPLAN  "results/${DESIGN}.def"
-set SDC        "results/${DESIGN}.sdc"
+set PLATFORM   "platforms/sky130hd"
+set ALL_LEFS   [list "${PLATFORM}/lef/sky130_fd_sc_hd.tlef" \
+                     "${PLATFORM}/lef/sky130_fd_sc_hd_merged.lef"]
+set ALL_LIBS   [list "${PLATFORM}/lib/sky130_fd_sc_hd__tt_025C_1v80.lib"]
+# Point these at the ORFS results for your design (see flows/LIVE_RUN.md):
+set NETLIST    "results/${PDK}/${DESIGN}/base/1_synth.v"
+set SDC        "results/${PDK}/${DESIGN}/base/1_synth.sdc"
+set FLOORPLAN  "results/${PDK}/${DESIGN}/base/6_final.def" ;# routed DEF
 set GROUP_COUNT 50
 
 # ---- 1. Read the flat 2D baseline ------------------------------------------
@@ -47,21 +42,37 @@ link_design  $DESIGN
 read_def -incremental $FLOORPLAN
 read_sdc $SDC
 
-# ---- 2. Parasitics from placement (no full route needed for a baseline) ----
-# set_wire_rc selects the per-length R/C model; estimate_parasitics -placement
-# turns placement into RC so report_checks has real horizontal wire delay.
+# ---- 2. Parasitics ---------------------------------------------------------
+# A placed design is enough for a baseline: estimate_parasitics -placement turns
+# placement into RC so report_checks has real horizontal wire delay. If you read
+# a fully routed DEF you may prefer extracted SPEF; -placement is the portable
+# default.
 set_wire_rc -signal -layer "met3"
 estimate_parasitics -placement
 
 # ---- 3. Units: declare them so the Python parser converts to SI/fs ---------
-# Keep these in sync with the "units" block emitted in step 5.
+# Must match the "units" block emitted in section 5.
 set_cmd_units -time ns -resistance kohm -capacitance pF -distance um
 
 # ---- 4. Collect the worst timing paths -------------------------------------
+# VERIFY: find_timing_paths returns a list of path-end handles on current
+# OpenSTA. -sort_by_slack puts the most critical first.
 set paths [find_timing_paths -path_delay max -group_count $GROUP_COUNT -sort_by_slack]
 
 # ---- 5. Emit schema logic-folding-baseline/v0 ------------------------------
+proc jnum {x} { if {$x eq "" || $x eq "INF"} { return "null" } else { return $x } }
 proc jstr {s} { return "\"[string map {\\ \\\\ \" \\\"} $s]\"" }
+
+# Derive the instance path from a pin full name "a/b/inst/PORT" -> "a/b/inst".
+# A timing arc INTO a pin is a *wire* arc when its instance differs from the
+# previous pin's instance (output->input across a net); it is a *cell* arc when
+# the instance is unchanged (input->output inside one gate). This is the
+# is_wire rule the contract relies on — no STA "is this a net?" query needed.
+proc inst_of {pin_full_name} {
+    set parts [split $pin_full_name "/"]
+    if {[llength $parts] <= 1} { return $pin_full_name }
+    return [join [lrange $parts 0 end-1] "/"]
+}
 
 puts "{"
 puts "  \"schema\": \"logic-folding-baseline/v0\","
@@ -71,39 +82,70 @@ puts "  \"corner\": [jstr $CORNER],"
 puts "  \"units\": {\"time\": \"ns\", \"resistance\": \"kohm\", \"capacitance\": \"pF\", \"length\": \"um\"},"
 puts "  \"paths\": \["
 
-set n [llength $paths]
-for {set i 0} {$i < $n} {incr i} {
-  set path [lindex $paths $i]
+set np [llength $paths]
+for {set i 0} {$i < $np} {incr i} {
+    set pe [lindex $paths $i]
 
-  # TODO(operator): the four accessors below are the version-sensitive spot.
-  # On recent OpenROAD/OpenSTA these are available via the STA path API; verify
-  # names against your build (e.g. `sta::path_*` or get_property on the path).
-  # Pull the exact command for your version from the OpenROAD docs before relying
-  # on this recipe. The point of the schema is that ONLY this mapping is fragile.
-  set startp [get_property $path startpoint]
-  set endp   [get_property $path endpoint]
-  set slack  [get_property $path slack]
-  set arr    [get_property $path arrival]
-  set req    [expr {$arr + $slack}]
+    # VERIFY: PathEnd properties via get_property. startpoint/endpoint are pins.
+    set startp [get_full_name [get_property $pe startpoint]]
+    set endp   [get_full_name [get_property $pe endpoint]]
+    set slack  [get_property $pe slack]
+    set arr    [get_property $pe arrival]
+    set req    [expr {$arr + $slack}]
 
-  puts "    {"
-  puts "      \"startpoint\": [jstr $startp],"
-  puts "      \"endpoint\": [jstr $endp],"
-  puts "      \"path_group\": \"clk\","
-  puts "      \"path_type\": \"max\","
-  puts "      \"slack\": $slack,"
-  puts "      \"arrival\": $arr,"
-  puts "      \"required\": $req,"
-  puts "      \"driver_resistance\": null,"
-  puts "      \"load_capacitance\": null,"
-  puts "      \"segments\": \["
-  # TODO(operator): iterate the path's pin/net arcs and, for each net arc, emit
-  #   {"pin","net","layer","incr_delay","wire_length","is_wire":true}
-  # Per-net horizontal length comes from `report_wire_length -net <net>
-  # -detailed_route` (or -global_route); incr_delay from the path arc delay.
-  # Cell (gate) arcs get "is_wire": false and wire_length 0.
-  puts "      \]"
-  if {$i < [expr {$n - 1}]} { puts "    }," } else { puts "    }" }
+    puts "    {"
+    puts "      \"startpoint\": [jstr $startp],"
+    puts "      \"endpoint\": [jstr $endp],"
+    puts "      \"path_group\": \"clk\","
+    puts "      \"path_type\": \"max\","
+    puts "      \"slack\": [jnum $slack],"
+    puts "      \"arrival\": [jnum $arr],"
+    puts "      \"required\": [jnum $req],"
+    puts "      \"driver_resistance\": null,"
+    puts "      \"load_capacitance\": null,"
+    puts "      \"segments\": \["
+
+    # VERIFY: get_property $pe points -> ordered list of path points; each point
+    # exposes `pin` (a pin handle) and `arrival` (cumulative time in -time units).
+    set pts [get_property $pe points]
+    set prev_inst ""
+    set prev_arr 0.0
+    set nseg 0
+    set npts [llength $pts]
+    for {set j 0} {$j < $npts} {incr j} {
+        set pt   [lindex $pts $j]
+        set pin  [get_property $pt pin]            ;# VERIFY
+        set parr [get_property $pt arrival]        ;# VERIFY (cumulative)
+        set pinname [get_full_name $pin]
+        set inst [inst_of $pinname]
+        set incr [expr {$parr - $prev_arr}]
+        # First point is the launch (clock/startpoint): a cell-side arc.
+        set is_wire [expr {$prev_inst ne "" && $inst ne $prev_inst}]
+
+        if {$is_wire} {
+            # VERIFY: net at this load pin. get_property $pin net -> net handle.
+            set net "null"
+            if {![catch {get_property $pin net} netobj] && $netobj ne ""} {
+                set net [jstr [get_full_name $netobj]]
+            }
+            set layer "null"   ;# STA has no per-arc routing layer; odb fills geometry
+            set wirelen 0       ;# placeholder; odb_wirelength.py supplies real µm
+            set seg "{\"pin\": [jstr $pinname], \"net\": $net, \"layer\": $layer, \"incr_delay\": [jnum $incr], \"wire_length\": $wirelen, \"is_wire\": true}"
+        } else {
+            set seg "{\"pin\": [jstr $pinname], \"net\": null, \"layer\": null, \"incr_delay\": [jnum $incr], \"wire_length\": 0, \"is_wire\": false}"
+        }
+        if {$nseg > 0} { puts "        ," }
+        puts "        $seg"
+        incr nseg
+        set prev_inst $inst
+        set prev_arr $parr
+    }
+    if {$nseg == 0} {
+        puts stderr "WARNING: path $i ($endp) emitted 0 segments — verify the section-5 accessors against your OpenSTA build (see flows/LIVE_RUN.md WI-2 checklist)."
+    }
+
+    puts "      \]"
+    if {$i < [expr {$np - 1}]} { puts "    }," } else { puts "    }" }
 }
 
 puts "  \]"
