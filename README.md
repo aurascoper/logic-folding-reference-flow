@@ -73,10 +73,10 @@ When a teardown does arrive (**Trigger A**, expected no earlier than the fall 20
 
 ## Layout
 
-- `python/` — Eq. 2 engine + 2D-baseline ingestion. `core_solver.py` holds `VerticalPathEvaluator` (the path-level break-even inequality, memo §7 Eq. 2); `baseline.py` parses the `logic-folding-baseline/v0` contract (OpenROAD / OpenSTA output) into that engine and joins it to the 3D tax. Pytest suite included.
+- `python/` — Eq. 2 engine + 2D-baseline ingestion. `core_solver.py` holds `VerticalPathEvaluator` (the path-level break-even inequality, memo §7 Eq. 2); `baseline.py` parses the `logic-folding-baseline/v0` contract (OpenROAD / OpenSTA output) into that engine, merges real routed wire length from odb, and joins it to the 3D tax. Pytest suite included.
 - `rust/` — `logic_folding_core` crate. Vectorized `PathEvaluator` with rayon-parallel evaluation across large mock path arrays; intended as a PyO3 target.
 - `julia/` — `thermal_apc_solver.jl`. FFT-based spatial-temporal thermal convolution and EWMA run-to-run state-space simulation with variable metrology delay.
-- `flows/` — `sta_dump.tcl`, the OpenROAD / OpenSTA recipe that emits the `logic-folding-baseline/v0` schema from a real placed design on a public PDK. This is the live Trigger-C step; see `flows/README.md`.
+- `flows/` — operator-run OpenROAD recipes for the live Trigger-C step: `sta_dump.tcl` emits the `logic-folding-baseline/v0` timing contract, and `odb_wirelength.py` emits the `logic-folding-netlen/v0` routed-geometry sidecar (real per-net µm from a routed DEF, merged in by `baseline.merge_net_lengths`). See `flows/README.md`.
 - `docs/` — Cross-reference to the source memo and section anchors.
 
 ## Quick start

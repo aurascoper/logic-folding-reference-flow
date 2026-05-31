@@ -1,0 +1,20 @@
+{
+  "schema": "logic-folding-netlen/v0",
+  "pdk": "sky130hd",
+  "design": "gcd",
+  "_note": "Illustrative ROUTED wire lengths (microns), as if read from a routed DEF via odb: net.getWire().getLength() / block.getDbUnitsPerMicron(). Deliberately longer than the baseline fixture's placeholder lengths to reflect real routing doglegs / congestion that HPWL smooths over. Unrouted nets would be absent, not zero. Regenerate with flows/odb_wirelength.py.",
+  "units": {"length": "um"},
+  "net_lengths": {
+    "_088_": 41.2,
+    "_091_": 55.8,
+    "_104_": 7.1,
+    "_061_": 3.5,
+    "_063_": 2.9,
+    "_140_": 66.4,
+    "_146_": 47.0,
+    "_150_": 21.3,
+    "_031_": 1.2,
+    "_034_": 1.8,
+    "_037_": 0.9
+  }
+}

@@ -9,12 +9,15 @@ into the Eq. 2 engine.
 """
 
 from .baseline import (
+    NETLEN_SCHEMA_ID,
     SCHEMA_ID,
     BaselinePath,
     BaselineReport,
     WireSegment,
     derive_foldable_savings,
     load_baseline_report,
+    load_net_lengths,
+    merge_net_lengths,
     params_from_path,
     parse_baseline_report,
     screen_path,
@@ -41,4 +44,8 @@ __all__ = [
     "params_from_path",
     "derive_foldable_savings",
     "screen_path",
+    # geometry merge (schema logic-folding-netlen/v0)
+    "NETLEN_SCHEMA_ID",
+    "load_net_lengths",
+    "merge_net_lengths",
 ]

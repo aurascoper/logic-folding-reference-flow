@@ -19,6 +19,7 @@ from pathlib import Path
 import pytest
 
 from logic_folding_reference import (
+    NETLEN_SCHEMA_ID,
     SCHEMA_ID,
     BaselinePath,
     DecisionLabel,
@@ -26,12 +27,19 @@ from logic_folding_reference import (
     WireSegment,
     derive_foldable_savings,
     load_baseline_report,
+    load_net_lengths,
+    merge_net_lengths,
     params_from_path,
     parse_baseline_report,
     screen_path,
 )
 
 FIXTURE = Path(__file__).parent / "fixtures" / "sky130_gcd_baseline.json"
+NETLEN = Path(__file__).parent / "fixtures" / "sky130_gcd_netlen.json"
+
+
+def _raw():
+    return json.loads(FIXTURE.read_text(encoding="utf-8"))
 
 
 # ---- Helpers ---------------------------------------------------------------
@@ -146,6 +154,80 @@ def test_screen_path_accepts_injected_savings_fn():
     assert d.horizontal_savings_fs == 500.0
     assert math.isclose(d.l_h_meters, p.total_wire_length_m, rel_tol=1e-12)
     assert d.margin_fs == d.horizontal_savings_fs - d.vertical_tax_fs
+
+
+# ---- Geometry merge (logic-folding-netlen/v0 -> contract) ------------------
+
+
+def test_netlen_fixture_is_schema_v0():
+    data = json.loads(NETLEN.read_text(encoding="utf-8"))
+    assert data["schema"] == NETLEN_SCHEMA_ID
+
+
+def test_load_net_lengths_normalises_to_um():
+    nl = load_net_lengths(NETLEN)
+    assert nl["_088_"] == 41.2
+    assert nl["_140_"] == 66.4
+
+
+def test_load_net_lengths_converts_declared_unit():
+    nl = load_net_lengths({
+        "schema": NETLEN_SCHEMA_ID,
+        "units": {"length": "nm"},
+        "net_lengths": {"_088_": 41200.0},  # 41200 nm -> 41.2 um
+    })
+    assert math.isclose(nl["_088_"], 41.2, rel_tol=1e-12)
+
+
+def test_load_net_lengths_rejects_bad_schema():
+    with pytest.raises(ValueError, match="schema"):
+        load_net_lengths({"schema": "wrong/v0", "net_lengths": {}})
+
+
+def test_merge_replaces_placeholder_with_routed_length():
+    merged = merge_net_lengths(_raw(), load_net_lengths(NETLEN))
+    report = parse_baseline_report(merged)
+    seg = next(s for s in report.paths[0].segments if s.net == "_088_")
+    # Real routed length from odb (41.2 um), not the baseline placeholder (38.6).
+    assert math.isclose(seg.wire_length_m, 41.2e-6, rel_tol=1e-12)
+    assert not math.isclose(seg.wire_length_m, 38.6e-6, rel_tol=1e-9)
+
+
+def test_merge_leaves_cell_arcs_untouched():
+    report = parse_baseline_report(merge_net_lengths(_raw(), load_net_lengths(NETLEN)))
+    for p in report.paths:
+        for s in p.segments:
+            if not s.is_wire:
+                assert s.wire_length_m == 0.0
+
+
+def test_merge_does_not_mutate_input():
+    raw = _raw()
+    before = raw["paths"][0]["segments"][1]["wire_length"]
+    merge_net_lengths(raw, load_net_lengths(NETLEN))
+    assert raw["paths"][0]["segments"][1]["wire_length"] == before
+
+
+def test_merge_on_missing_error_raises():
+    # Only one net supplied; the rest are "unrouted/absent" -> loud failure.
+    with pytest.raises(KeyError, match="routed length"):
+        merge_net_lengths(_raw(), {"_088_": 41.2})
+
+
+def test_merge_on_missing_keep_leaves_existing():
+    merged = merge_net_lengths(_raw(), {"_088_": 41.2}, on_missing="keep")
+    report = parse_baseline_report(merged)
+    s088 = next(s for s in report.paths[0].segments if s.net == "_088_")
+    s146 = next(s for s in report.paths[2].segments if s.net == "_146_")
+    assert math.isclose(s088.wire_length_m, 41.2e-6, rel_tol=1e-12)
+    assert math.isclose(s146.wire_length_m, 44.3e-6, rel_tol=1e-12)  # baseline kept
+
+
+def test_merge_on_missing_zero_sets_zero():
+    merged = merge_net_lengths(_raw(), {"_088_": 41.2}, on_missing="zero")
+    report = parse_baseline_report(merged)
+    s146 = next(s for s in report.paths[2].segments if s.net == "_146_")
+    assert s146.wire_length_m == 0.0
 
 
 # ---- End-to-end screening (skipped until §7 savings model implemented) ------

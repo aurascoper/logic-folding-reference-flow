@@ -48,6 +48,7 @@ boundary (time → fs, resistance → Ω, capacitance → F, length → m).
 
 from __future__ import annotations
 
+import copy
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -56,6 +57,7 @@ from typing import Callable, Optional, Union
 from .core_solver import PathDecision, ProcessParameters, VerticalPathEvaluator
 
 SCHEMA_ID = "logic-folding-baseline/v0"
+NETLEN_SCHEMA_ID = "logic-folding-netlen/v0"
 
 # ---- Unit conversion tables (declared unit -> engine SI/fs convention) ------
 
@@ -295,3 +297,82 @@ def screen_path(
         n_bond_contacts=n_bond_contacts,
         l_h_meters=path.total_wire_length_m,
     )
+
+
+# ---- Geometry: merge odb routed wire length into the contract ---------------
+
+
+def load_net_lengths(source: Union[str, Path, dict]) -> dict:
+    """Load a ``logic-folding-netlen/v0`` sidecar into ``{net_name: length_um}``.
+
+    The sidecar is produced by ``flows/odb_wirelength.py`` from a **routed** DEF
+    via OpenROAD's odb (``net.getWire().getLength()`` in DBU, scaled by
+    ``block.getDbUnitsPerMicron()``). Lengths are normalised to microns here,
+    whatever unit the sidecar declares.
+
+    Unrouted nets are *absent* from the sidecar — odb's ``net.getWire()`` returns
+    ``None`` for them — so a missing key means "no routed copper", not "zero
+    length". :func:`merge_net_lengths` decides what that means for the contract.
+    """
+    data = (
+        source
+        if isinstance(source, dict)
+        else json.loads(Path(source).read_text(encoding="utf-8"))
+    )
+    schema = data.get("schema")
+    if schema != NETLEN_SCHEMA_ID:
+        raise ValueError(
+            f"unexpected schema {schema!r}; expected {NETLEN_SCHEMA_ID!r}"
+        )
+    unit = data.get("units", {}).get("length", "um")
+    to_um = _factor(_LEN_TO_M, unit, "length") / _LEN_TO_M["um"]
+    return {
+        str(name): float(val) * to_um
+        for name, val in data.get("net_lengths", {}).items()
+    }
+
+
+def merge_net_lengths(
+    report: dict,
+    net_lengths_um: dict,
+    *,
+    on_missing: str = "error",
+) -> dict:
+    """Populate ``segments[].wire_length`` in a schema-v0 ``report`` dict from
+    odb routed lengths (``{net: µm}``); returns a new dict (input untouched).
+
+    Joins on ``segments[].net`` and writes only wire arcs (``is_wire``); cell
+    arcs are left exactly as-is — STA gives the time, odb gives the space. Values
+    are written in the report's declared length unit (converted from µm).
+
+    ``on_missing`` governs a wire arc whose net has no routed length:
+
+    * ``"error"`` (default) — raise. A timed wire with no routed copper is a real
+      routing-coverage anomaly, not something to silently zero.
+    * ``"keep"`` — leave the existing ``wire_length`` (e.g. an STA estimate).
+    * ``"zero"`` — set it to ``0.0``.
+    """
+    if on_missing not in {"error", "keep", "zero"}:
+        raise ValueError(f"on_missing must be error|keep|zero, got {on_missing!r}")
+
+    report_unit = report.get("units", {}).get("length", "m")
+    um_to_report = _LEN_TO_M["um"] / _factor(_LEN_TO_M, report_unit, "length")
+
+    out = copy.deepcopy(report)
+    for path in out.get("paths", []):
+        for seg in path.get("segments", []):
+            if not seg.get("is_wire", False):
+                continue
+            net = seg.get("net")
+            if net is not None and net in net_lengths_um:
+                seg["wire_length"] = net_lengths_um[net] * um_to_report
+            elif on_missing == "error":
+                raise KeyError(
+                    f"no routed length for wire net {net!r} on path "
+                    f"{path.get('endpoint')!r}: the net is unrouted or absent "
+                    f"from the odb sidecar (pass on_missing='keep'/'zero' to allow)"
+                )
+            elif on_missing == "zero":
+                seg["wire_length"] = 0.0
+            # "keep": leave seg["wire_length"] unchanged
+    return out
