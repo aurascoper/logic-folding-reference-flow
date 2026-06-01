@@ -4,6 +4,37 @@ Operator runbook for taking the recipes from "contract + recipe" to
 "demonstrated on a real sky130 design." Host-agnostic; the worked path below is
 GitHub Codespaces (native Linux, no Apple-Silicon emulation).
 
+## Status (2026-06-01) — timing half done, geometry half pending hardware
+
+- ✅ **Timing contract proven against real OpenSTA output.** A real placed-`gcd`
+  `report_checks -format json` dump is committed at
+  `python/tests/fixtures/opensta_gcd_placed_checks.json`; `adapt_opensta_checks`
+  → parse → screen are green in CI (45 tests). Gate #3 met for timing.
+- ✅ **Geometry recipe written + validated to run** (`odb_wirelength.py` +
+  `merge_net_lengths`) — it read a real DEF and correctly emitted *nothing* for
+  unrouted nets (the `on_missing="error"` safeguard, working).
+- ⏳ **Routed geometry not yet captured** — needs a fully *routed* design, which a
+  GitHub Codespace couldn't produce: the prebuilt `openroad/orfs` binary SIGILLs
+  at CTS (wants AVX-512; the VM has only avx/avx2), and a from-source build fails
+  at 95% linking the `naja_python.so` wrapper against the Codespace's *static*
+  `libpython3.12.a` (non-PIC).
+
+### How to resume (on a normal Linux box — avoids both Codespace walls)
+
+1. Install OpenROAD + ORFS natively (distro CPU has the right ISA; system Python
+   ships a shared libpython): distro packages, or `./build_openroad.sh --local`.
+2. `cd flow && make DESIGN_CONFIG=./designs/sky130hd/gcd/config.mk` → produces a
+   routed `results/sky130hd/gcd/base/6_final.def` (+ SPEF).
+3. `bash /path/to/flows/run_live.sh` (from the ORFS `flow/` dir) → timing +
+   geometry + the contract check in one shot. Expect `GATE 1-3 PASS` with
+   **non-zero `Δτ_save`** (routed parasitics) and **real `l_h`**.
+4. Gate 4: copy `checks.json` / `netlen.json` into `python/tests/fixtures/`
+   (replacing the illustrative samples), re-point the value-specific assertions
+   in `test_baseline_ingest.py`, `pytest`.
+
+The whole Python side (adapter, merge, screen, `run_live.sh`) is already proven;
+the only missing input is one clean routed run.
+
 ## Success gate (4 parts)
 
 The committed fixtures are illustrative numbers, not silicon — they will *not*
