@@ -14,6 +14,7 @@ from .baseline import (
     BaselinePath,
     BaselineReport,
     WireSegment,
+    adapt_opensta_checks,
     derive_foldable_savings,
     load_baseline_report,
     load_net_lengths,
@@ -48,4 +49,6 @@ __all__ = [
     "NETLEN_SCHEMA_ID",
     "load_net_lengths",
     "merge_net_lengths",
+    # OpenSTA report_checks -format json adapter
+    "adapt_opensta_checks",
 ]

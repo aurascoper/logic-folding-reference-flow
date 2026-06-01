@@ -1,0 +1,43 @@
+{"checks": [
+{
+  "type": "output_delay",
+  "path_group": "core_clock",
+  "path_type": "max",
+  "startpoint": "dpath.a_reg.out[4]$_DFFE_PP_/Q",
+  "endpoint": "resp_msg[13]",
+  "source_clock": "core_clock",
+  "source_clock_edge": "rise",
+  "source_clock_path": [
+    {"instance": "", "cell": "gcd", "pin": "clk", "x": 0.000000400, "y": 0.000072420, "arrival": 0.000e+00, "capacitance": 6.451e-14, "slew": 0.000e+00},
+    {"instance": "dpath.a_reg.out[4]$_DFFE_PP_", "cell": "sky130_fd_sc_hd__edfxtp_1", "pin": "dpath.a_reg.out[4]$_DFFE_PP_/CLK", "net": "clk", "x": 0.000018210, "y": 0.000044940, "arrival": 0.000e+00, "slew": 0.000e+00}
+  ],
+  "source_path": [
+    {"instance": "dpath.a_reg.out[4]$_DFFE_PP_", "cell": "sky130_fd_sc_hd__edfxtp_1", "pin": "dpath.a_reg.out[4]$_DFFE_PP_/Q", "net": "_029_", "x": 0.000028570, "y": 0.000044877, "arrival": 3.655e-10, "capacitance": 6.268e-15, "slew": 8.924e-11},
+    {"instance": "_119_/_145_", "cell": "sky130_fd_sc_hd__xnor3_1", "pin": "_119_/_145_/A", "net": "gcd/ALU_16_0_16_0_16_unused_CO[14:0]_X_KOGGE_STONE/A[4]", "hier_pins": ["_119_/A[4]"], "x": 0.000031170, "y": 0.000042000, "arrival": 3.655e-10, "slew": 8.924e-11},
+    {"instance": "_119_/_145_", "cell": "sky130_fd_sc_hd__xnor3_1", "pin": "_119_/_145_/X", "net": "_119_/_016_", "x": 0.000024135, "y": 0.000042057, "arrival": 8.196e-10, "capacitance": 1.669e-14, "slew": 1.351e-10},
+    {"instance": "_119_/_214_", "cell": "sky130_fd_sc_hd__or2_1", "pin": "_119_/_214_/A", "net": "_119_/_016_", "x": 0.000031502, "y": 0.000034315, "arrival": 8.196e-10, "slew": 1.351e-10},
+    {"instance": "_119_/_214_", "cell": "sky130_fd_sc_hd__or2_1", "pin": "_119_/_214_/X", "net": "_119_/_079_", "x": 0.000032295, "y": 0.000034016, "arrival": 1.125e-09, "capacitance": 1.238e-14, "slew": 9.217e-11},
+    {"instance": "_119_/_216_", "cell": "sky130_fd_sc_hd__nor3_2", "pin": "_119_/_216_/B", "net": "_119_/_079_", "x": 0.000032020, "y": 0.000028740, "arrival": 1.125e-09, "slew": 9.217e-11},
+    {"instance": "_119_/_216_", "cell": "sky130_fd_sc_hd__nor3_2", "pin": "_119_/_216_/Y", "net": "_119_/_081_", "x": 0.000032752, "y": 0.000028937, "arrival": 1.322e-09, "capacitance": 6.502e-15, "slew": 1.712e-10},
+    {"instance": "_119_/_237_", "cell": "sky130_fd_sc_hd__o31ai_1", "pin": "_119_/_237_/A3", "net": "_119_/_081_", "x": 0.000036481, "y": 0.000031452, "arrival": 1.322e-09, "slew": 1.712e-10},
+    {"instance": "_119_/_237_", "cell": "sky130_fd_sc_hd__o31ai_1", "pin": "_119_/_237_/Y", "net": "_119_/_098_", "x": 0.000037141, "y": 0.000031013, "arrival": 1.425e-09, "capacitance": 5.326e-15, "slew": 1.132e-10},
+    {"instance": "_119_/place143", "cell": "sky130_fd_sc_hd__buf_4", "pin": "_119_/place143/A", "net": "_119_/_098_", "x": 0.000049040, "y": 0.000028725, "arrival": 1.425e-09, "slew": 1.132e-10},
+    {"instance": "_119_/place143", "cell": "sky130_fd_sc_hd__buf_4", "pin": "_119_/place143/X", "net": "_119_/net160", "x": 0.000050316, "y": 0.000028692, "arrival": 1.587e-09, "capacitance": 6.610e-15, "slew": 2.935e-11},
+    {"instance": "_119_/_263_", "cell": "sky130_fd_sc_hd__o211ai_1", "pin": "_119_/_263_/A2", "net": "_119_/net160", "x": 0.000057781, "y": 0.000028446, "arrival": 1.587e-09, "slew": 2.935e-11},
+    {"instance": "_119_/_263_", "cell": "sky130_fd_sc_hd__o211ai_1", "pin": "_119_/_263_/Y", "net": "_119_/_120_", "x": 0.000058914, "y": 0.000028250, "arrival": 1.780e-09, "capacitance": 6.194e-15, "slew": 2.089e-10},
+    {"instance": "_119_/_264_", "cell": "sky130_fd_sc_hd__xnor2_1", "pin": "_119_/_264_/A", "net": "_119_/_120_", "x": 0.000063377, "y": 0.000025655, "arrival": 1.780e-09, "slew": 2.089e-10},
+    {"instance": "_119_/_264_", "cell": "sky130_fd_sc_hd__xnor2_1", "pin": "_119_/_264_/Y", "net": "gcd/ALU_16_0_16_0_16_unused_CO[14:0]_X_KOGGE_STONE/Y[13]", "hier_pins": ["_119_/Y[13]"], "x": 0.000064869, "y": 0.000026076, "arrival": 1.958e-09, "capacitance": 7.357e-15, "slew": 2.117e-10},
+    {"instance": "output43", "cell": "sky130_fd_sc_hd__clkdlybuf4s50_1", "pin": "output43/A", "net": "net43", "x": 0.000071610, "y": 0.000020222, "arrival": 1.958e-09, "slew": 2.117e-10},
+    {"instance": "output43", "cell": "sky130_fd_sc_hd__clkdlybuf4s50_1", "pin": "output43/X", "net": "resp_msg[13]", "x": 0.000074718, "y": 0.000020270, "arrival": 2.463e-09, "capacitance": 1.316e-15, "slew": 3.527e-11},
+    {"instance": "", "cell": "gcd", "pin": "resp_msg[13]", "x": 0.000077650, "y": 0.000023460, "arrival": 2.463e-09, "slew": 3.527e-11}
+  ],
+  "target_clock": "core_clock",
+  "target_clock_edge": "rise",
+  "data_arrival_time": 2.463e-09,
+  "crpr": 0.000e+00,
+  "margin": 2.200e-10,
+  "required_time": 8.800e-10,
+  "slack": -1.583e-09
+}
+]
+}

@@ -10,9 +10,9 @@ Two recipes feed one contract — **STA gives the time, odb gives the space**:
 
 ```
  OpenROAD / OpenSTA        sta_dump.tcl          baseline.py            core_solver.py
- (placed DEF + Liberty) ─▶ emits timing      ─▶  parse + convert    ─▶  Eq. 2 break-even
- estimate_parasitics       logic-folding-         to SI/fs; join         PASS / FAIL /
- report_checks             baseline/v0 (JSON)     anchor + 3D tax        MARGINAL
+ (placed/routed odb)    ─▶ report_checks      ─▶  adapt_opensta_     ─▶  Eq. 2 break-even
+ estimate_parasitics       -format json           checks → parse →       PASS / FAIL /
+ report_checks             (between markers)      SI/fs; + 3D tax        MARGINAL
                                                         ▲
  OpenROAD / odb            odb_wirelength.py          │ merge_net_lengths()
  (ROUTED DEF)           ─▶ emits geometry     ───────▶┘ fills segments[].wire_length
@@ -22,8 +22,10 @@ Two recipes feed one contract — **STA gives the time, odb gives the space**:
 
 ## The timing contract: `logic-folding-baseline/v0`
 
-The TCL recipe and the Python parser meet at one stable JSON schema, so the
-parser never has to track OpenSTA's version-specific native output. Per path:
+`sta_dump.tcl` emits `report_checks -format json`; the **tested**
+`adapt_opensta_checks` maps that to this schema (proven against a real captured
+dump, `python/tests/fixtures/opensta_gcd_placed_checks.json`), so the
+version-sensitive bits stay in Python, not Tcl. Per path:
 
 | field | meaning | feeds |
 |-------|---------|-------|
@@ -71,22 +73,23 @@ Both recipes need a local OpenROAD build, a public PDK (sky130hd), and a design;
 none live in the repo, so they are operator steps, not CI.
 
 ```sh
-# timing (placed design is enough for estimate_parasitics)
-openroad -no_init -exit flows/sta_dump.tcl \
-    > python/tests/fixtures/sky130_gcd_baseline.json
+# timing -> report_checks json (adapted by check_live / adapt_opensta_checks)
+openroad -no_init -exit flows/sta_dump.tcl > checks.json 2> sta_dump.log
+python flows/check_live.py checks.json
 
 # geometry (needs a ROUTED .def)
 openroad -python flows/odb_wirelength.py \
     --tlef <tech.lef> --lef <cells.lef> --def <routed.def> \
-    --pdk sky130hd --design gcd \
-    > python/tests/fixtures/sky130_gcd_netlen.json
+    --pdk sky130hd --design gcd > netlen.json 2> odb.log
+python flows/check_live.py checks.json netlen.json
 ```
 
-Edit the file paths for your environment. In `sta_dump.tcl` one spot is
-version-sensitive — the per-path accessors — and is marked `TODO(operator)`;
-verify it against your OpenROAD version. The `odb` calls in `odb_wirelength.py`
-are the documented Python API (`net.getWire().getLength()`,
-`block.getDbUnitsPerMicron()`; OpenROAD `test/python_api.md`).
+Edit the input vars at the top of each script for your environment.
+`sta_dump.tcl` uses only stable OpenSTA commands (`report_checks -format json`);
+the arc / `is_wire` / net mapping is tested Python (`adapt_opensta_checks`). The
+`odb` calls in `odb_wirelength.py` are the documented Python API
+(`net.getWire().getLength()`, `block.getDbUnitsPerMicron()`; OpenROAD
+`test/python_api.md`).
 
 ## The committed fixtures are samples, not silicon
 

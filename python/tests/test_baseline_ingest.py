@@ -25,6 +25,7 @@ from logic_folding_reference import (
     DecisionLabel,
     ProcessParameters,
     WireSegment,
+    adapt_opensta_checks,
     derive_foldable_savings,
     load_baseline_report,
     load_net_lengths,
@@ -36,6 +37,7 @@ from logic_folding_reference import (
 
 FIXTURE = Path(__file__).parent / "fixtures" / "sky130_gcd_baseline.json"
 NETLEN = Path(__file__).parent / "fixtures" / "sky130_gcd_netlen.json"
+STA_CHECKS = Path(__file__).parent / "fixtures" / "opensta_gcd_placed_checks.json"
 
 
 def _raw():
@@ -228,6 +230,60 @@ def test_merge_on_missing_zero_sets_zero():
     report = parse_baseline_report(merged)
     s146 = next(s for s in report.paths[2].segments if s.net == "_146_")
     assert s146.wire_length_m == 0.0
+
+
+# ---- OpenSTA adapter (REAL report_checks json -> contract) -----------------
+# Fixture is genuine `report_checks -format json` output from a placed sky130hd
+# gcd design (OpenROAD 26Q2). These tests pin the adapter against real silicon-
+# grade tool output — the heart of LIVE_RUN gate #3.
+
+
+def _sta():
+    return json.loads(STA_CHECKS.read_text(encoding="utf-8"))
+
+
+def test_adapter_emits_schema_v0_in_si_units():
+    adapted = adapt_opensta_checks(_sta(), pdk="sky130hd", design="gcd")
+    assert adapted["schema"] == SCHEMA_ID
+    assert adapted["units"]["time"] == "s"
+    assert adapted["pdk"] == "sky130hd"
+
+
+def test_adapter_parses_real_path_endpoints_and_slack():
+    p = parse_baseline_report(adapt_opensta_checks(_sta())).paths[0]
+    assert p.startpoint == "dpath.a_reg.out[4]$_DFFE_PP_/Q"
+    assert p.endpoint == "resp_msg[13]"
+    # slack -1.583 ns -> -1.583e6 fs, sign preserved (this path is VIOLATED)
+    assert math.isclose(p.slack_fs, -1.583e-9 * 1e15, rel_tol=1e-9)
+    assert p.slack_fs < 0
+
+
+def test_adapter_is_wire_classification_from_instance_field():
+    p = parse_baseline_report(adapt_opensta_checks(_sta())).paths[0]
+    assert len(p.segments) == 18
+    assert p.segments[0].is_wire is False   # _DFFE_PP_/Q : CLK->Q cell arc
+    assert p.segments[1].is_wire is True    # -> _145_/A  : net arc
+    assert p.segments[2].is_wire is False   # _145_/A->/X : gate arc
+    assert sum(s.is_wire for s in p.segments) == 9
+    # cell arc carries the real gate delay; wire arc is ~0 at placement
+    assert math.isclose(p.segments[2].incr_delay_fs,
+                        (8.196e-10 - 3.655e-10) * 1e15, rel_tol=1e-6)
+    assert p.segments[1].incr_delay_fs == 0.0
+
+
+def test_adapter_placement_wire_delay_is_negligible():
+    # On a PLACED design, estimated wire delay ~0, so Policy 2 (25 ps gate)
+    # reclaims nothing — real Δτ_save needs routed parasitics. Honest finding.
+    p = parse_baseline_report(adapt_opensta_checks(_sta())).paths[0]
+    assert p.total_wire_delay_fs == 0.0
+    assert derive_foldable_savings(p) == 0.0
+
+
+def test_adapter_output_feeds_screen_unchanged():
+    # LIVE_RUN gate #3: real OpenSTA output flows through the unchanged consumer.
+    p = parse_baseline_report(adapt_opensta_checks(_sta())).paths[0]
+    d = screen_path(p, _tax_params(), n_vertical_vias=2, n_bond_contacts=1)
+    assert d.label in {DecisionLabel.PASS, DecisionLabel.FAIL, DecisionLabel.MARGINAL}
 
 
 # ---- End-to-end screening (skipped until §7 savings model implemented) ------

@@ -376,3 +376,82 @@ def merge_net_lengths(
                 seg["wire_length"] = 0.0
             # "keep": leave seg["wire_length"] unchanged
     return out
+
+
+# ---- Adapter: OpenSTA `report_checks -format json` -> contract --------------
+
+
+def adapt_opensta_checks(
+    data: dict,
+    *,
+    pdk: Optional[str] = None,
+    design: Optional[str] = None,
+    corner: Optional[str] = None,
+) -> dict:
+    """Convert OpenSTA ``report_checks -format json`` output to a schema-v0 dict.
+
+    This is the robust replacement for emitting our schema from Tcl: ``sta_dump``
+    just runs ``report_checks -format json`` (a stable, documented OpenSTA
+    feature) and this *tested* adapter does the mapping. OpenSTA emits raw SI
+    (seconds, farads, meters), so the emitted ``units`` block says so and the
+    parser converts to fs at the boundary.
+
+    Per OpenSTA check, the data path is ``source_path`` (the clock network,
+    ``source_clock_path``, is excluded). The arc *into* each pin is a **wire**
+    arc when the pin's ``instance`` differs from the previous pin's (an
+    output→input net crossing) and a **cell** arc when the instance is unchanged
+    (an input→output gate stage) — the same ``is_wire`` rule the contract uses,
+    read straight off the ``instance`` field. ``incr_delay`` is the cumulative
+    ``arrival`` delta; ``wire_length`` is left 0 for the geometry merge to fill.
+
+    Note: under ORFS hierarchical synthesis, a load pin's ``net`` may be a
+    hierarchical alias (e.g. ``gcd/.../A[4]``) rather than the flat odb name
+    (``_029_``); reconciling those is a concern only for the geometry merge, not
+    for timing.
+    """
+    paths = []
+    for check in data.get("checks", []):
+        source_path = check.get("source_path") or []
+        if not source_path:
+            continue
+        segments = []
+        prev_inst = None
+        prev_arrival = 0.0
+        for i, stage in enumerate(source_path):
+            inst = stage.get("instance", "") or ""
+            arrival = float(stage.get("arrival", 0.0))
+            is_wire = i > 0 and inst != prev_inst
+            segments.append(
+                {
+                    "pin": stage.get("pin"),
+                    "net": (stage.get("net") if is_wire else None),
+                    "layer": None,
+                    "incr_delay": arrival - prev_arrival,
+                    "wire_length": 0,
+                    "is_wire": is_wire,
+                }
+            )
+            prev_inst = inst
+            prev_arrival = arrival
+        paths.append(
+            {
+                "startpoint": check.get("startpoint"),
+                "endpoint": check.get("endpoint"),
+                "path_group": check.get("path_group"),
+                "path_type": check.get("path_type"),
+                "slack": float(check.get("slack", 0.0)),
+                "arrival": float(check.get("data_arrival_time", 0.0)),
+                "required": float(check.get("required_time", 0.0)),
+                "driver_resistance": None,
+                "load_capacitance": None,
+                "segments": segments,
+            }
+        )
+    return {
+        "schema": SCHEMA_ID,
+        "pdk": pdk,
+        "design": design,
+        "corner": corner,
+        "units": {"time": "s", "resistance": "ohm", "capacitance": "F", "length": "m"},
+        "paths": paths,
+    }
