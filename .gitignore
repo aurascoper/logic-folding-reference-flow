@@ -58,3 +58,7 @@ checks.json
 netlen.json
 probe.out
 probe.tcl
+
+# Claude Code (commit .claude/settings.json; ignore transient worktrees + local state)
+.claude/worktrees/
+.claude/settings.local.json
