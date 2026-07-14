@@ -35,6 +35,8 @@ use rayon::prelude::*;
 
 pub mod mock;
 
+pub use mock::generate_kirin_2026_claimed_paths;
+
 /// Conversion factor from SI seconds to femtoseconds.
 pub const SECONDS_TO_FS: f64 = 1.0e15;
 

@@ -79,3 +79,57 @@ He Tingbo's own admission of the tooling and thermal hurdles restates memo §7 a
 ### Net
 
 No code or equation change. The new content is strategic (EDA toolchain) rather than physical, and the one physical addition (inter-wafer variation) is a teardown variable to check in the fall, not a fired trigger. Monitoring current as of 2026-05-30.
+
+---
+
+## 2026-07-03 — status: all triggers OPEN (Tau Scaling Law V2 paper)
+
+Huawei published a **Version 2 paper** of the Tau Scaling Law, substantially expanding the May 2026 ISCAS announcement. He Tingbo disclosed measured Kirin 2026 chip data and positioned LogicFolding as one of five "landing technologies." No trigger fired; the no-action decision stands. Self-reported data is not independent verification.
+
+### Timeline
+
+| Date | Event | Sources |
+|------|-------|---------|
+| 2026-07-03 | He Tingbo publishes **Tau Scaling Law V2 paper**: discloses measured power consumption, voltage, frequency, area, and power density for the Kirin 2026 chip. Enumerates five "landing technologies": **LogicFolding, hybrid bonding, TSV, Unified Bus, Hi-ONE optical engine**. Introduces a **"gear ratio"** concept for LogicFolding (folding ratio governing vertical-to-horizontal delay tradeoff). Outlines a **2030 roadmap** for LogicFolding to reach Ascend AI chips. | Huawei V2 paper (He Tingbo, July 3, 2026) |
+| 2026-07-03 | **Kirin 9050 Pro** naming: the upcoming chip may be named Kirin 9050 Pro and is reportedly in packaging and testing. Fall 2026 Mate 90 launch window maintained. | Industry reports |
+| 2026-06-15 | **IBM** announces sub-1nm "nanostack" transistor architecture at **VLSI 2026** — a separate 3D integration advance in the broader field, not LogicFolding-specific. | IBM VLSI 2026 |
+| 2026-06-18 | **Samsung** demonstrates 42nm gate-pitch 3D stacked FET at **VLSI 2026** — another 3D integration datapoint in the broader field. | Samsung VLSI 2026 |
+
+### New claims from the V2 paper
+
+The V2 paper provides more detail than the May 2026 ISCAS keynote but remains **vendor self-reported data**, not independently verified:
+
+1. **Kirin 2026 measured data:** power consumption, voltage, frequency, area, and power density. These are Huawei's own measurements on their own chip — not a third-party teardown.
+2. **Five landing technologies:** LogicFolding is positioned alongside hybrid bonding, TSV, Unified Bus, and Hi-ONE optical engine as one of five "landing technologies" for the Tau Scaling paradigm. This frames LogicFolding as part of a broader packaging/integration suite rather than a standalone scaling law.
+3. **Gear ratio concept:** The V2 paper introduces a "gear ratio" for LogicFolding — a parameter governing the vertical-to-horizontal delay tradeoff. This is conceptually related to the memo's Eq. 2 break-even ratio (Δτ_save vs. vertical tax), though Huawei's formulation and the memo's are not directly comparable without seeing the paper's exact equations.
+4. **2030 Ascend AI roadmap:** Huawei outlines a path for LogicFolding to reach Ascend AI chips by 2030 — a 4-year roadmap, not a current product.
+5. **Kirin 9050 Pro:** reportedly in packaging and testing; fall 2026 launch window maintained.
+
+### Scoring
+
+**Trigger A — Shipping teardown: PARTIAL MOVEMENT, NOT FIRED.**
+Kirin 2026 power/voltage/area/frequency data is Huawei's own measured data from their own chip. This is more detail than the May keynote, but it is self-reported, not an independent teardown. No third party has measured sustained thermal behavior, path delay, or die/package cost. The fall 2026 launch is still months away. A remains open; movement is incremental.
+
+**Trigger B — Foundry / PDK disclosure: NOT FIRED.**
+No SMIC or Hua Hong PDK, design-rule set, via/bond parasitic data, or yield figure has been released for the dual-active-logic stack. The V2 paper does not name a foundry partner with auditable data rights. B remains open and unchanged.
+
+**Trigger C — Open reference flow: NOT FIRED.**
+This repository remains the only open reference flow. The Peking University 3D EDA tool (logged 2026-05-29) is still a prototype on no public PDK. The V2 paper does not disclose an open-source flow. C remains open; this repository is the seed, not the satisfaction.
+
+### Broader 3D integration context (does not change the verdict)
+
+IBM's sub-1nm nanostack transistor (VLSI 2026) and Samsung's 42nm gate-pitch 3D stacked FET (VLSI 2026) are significant advances in the broader 3D integration field. They are not LogicFolding-specific and do not constitute independent verification of Huawei's claims. They do reinforce the memo's broader point: 3D integration is an active field with multiple approaches, and LogicFolding is one variant whose specific claims require their own evidence.
+
+### What the "gear ratio" concept means for this repository
+
+The V2 paper's "gear ratio" concept is the first public framing from Huawei that maps onto the memo's Eq. 2 structure — a ratio governing when vertical folding pays off versus when it doesn't. If the paper's equations are made public in sufficient detail, they could be cross-referenced against `core_solver.py:VerticalPathEvaluator.evaluate` (the full Eq. 2) and `rust/src/lib.rs:PathEvaluator::evaluate` (the abbreviated form). Until the exact formulation is available, the memo's Eq. 2 remains the reference.
+
+### Claimed data fixture
+
+Kirin 2026 claimed power density, voltage, and frequency numbers have been added as a **claimed fixture** in `python/tests/fixtures/kirin_2026_claimed.json` — clearly marked as unverified vendor data. A "what-if" analysis script (`python/scripts/kirin_2026_whatif.py`) evaluates the break-even inequality against these claimed numbers in a conditional mode: *if these claimed numbers are accurate, here is what the break-even inequality would show.* This does not treat Huawei's numbers as validated truth.
+
+### Net
+
+No equation or verdict change is warranted. The V2 paper provides more detail but not independent verification. The memo's no-action decision stands: self-reported data does not clear the independent-evidence bar. Thermal and yield data remain not yet public. The fall 2026 Kirin 9050 Pro / Mate 90 launch remains the earliest opportunity for Trigger A to fire.
+
+Monitoring current as of 2026-07-03.

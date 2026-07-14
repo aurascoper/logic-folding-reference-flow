@@ -145,3 +145,42 @@ fn marginal_label_appears_only_when_noise_floor_nonzero() {
     let (_, _, marginal_noisy) = noisy.tally_parallel(&paths);
     assert!(marginal_noisy > 0);
 }
+
+/// Test that the Kirin 2026 claimed-data generator produces a valid ensemble
+/// with the expected bimodal structure. This does NOT validate Huawei's
+/// claims — it only verifies the generator is structurally correct.
+#[test]
+fn kirin_2026_claimed_paths_have_bimodal_structure() {
+    use logic_folding_core::generate_kirin_2026_claimed_paths;
+    use rand::SeedableRng;
+    let mut rng = rand::rngs::StdRng::seed_from_u64(42);
+    let paths = generate_kirin_2026_claimed_paths(10_000, &mut rng);
+
+    // All paths must have valid via/bond counts
+    for p in &paths {
+        assert!(p.n_vertical_vias >= 1);
+    }
+
+    // The ensemble should have a bimodal savings distribution:
+    // most paths < 250 fs (local), a small fraction > 800 fs (global).
+    let local_count = paths.iter().filter(|p| p.horizontal_savings_fs <= 250.0).count();
+    let global_count = paths.iter().filter(|p| p.horizontal_savings_fs > 800.0).count();
+
+    // ~92% local, ~8% global (with RNG variance)
+    let total = paths.len();
+    assert!(
+        local_count > total * 85 / 100,
+        "expected >85% local paths, got {}/{}", local_count, total
+    );
+    assert!(
+        global_count > total * 5 / 100,
+        "expected >5% global paths, got {}/{}", global_count, total
+    );
+
+    // Global paths should not exceed the 50,000 fs cap
+    let max_savings = paths.iter().map(|p| p.horizontal_savings_fs).fold(0.0_f64, f64::max);
+    assert!(
+        max_savings <= 50_000.0,
+        "max savings {max_savings} exceeds 50,000 fs cap"
+    );
+}

@@ -1,0 +1,64 @@
+{
+  "schema": "logic-folding-claimed/v0",
+  "_warning": "CLAIMED BY HUAWEI, NOT INDEPENDENTLY VERIFIED. All numbers in this file are vendor self-reported data from the Tau Scaling Law V2 paper (He Tingbo, July 3, 2026). They are NOT teardown measurements, NOT foundry-confirmed, and NOT independently audited. Per the memo's no-action decision, self-reported data does not clear the independent-evidence bar. Use only in 'what-if' conditional mode: 'if these claimed numbers are accurate, here is what the break-even inequality would show.' Do NOT treat as validated truth.",
+  "source": "Huawei Tau Scaling Law V2 paper, He Tingbo, 2026-07-03",
+  "chip": "Kirin 2026 (a.k.a. Kirin 9050 Pro)",
+  "vendor": "HiSilicon / Huawei",
+  "verification_status": "self-reported",
+  "_note_on_values": "The V2 paper discloses power, voltage, frequency, area, and power density. The exact numeric values below are drawn from the paper's public reporting as of 2026-07-03. Where the paper gives ranges or approximate figures, the conservative (less favorable to LogicFolding) end is used. Where exact values are not yet available from public reporting, fields are marked null with a _note — they will be populated when the full paper text is accessible.",
+  "claimed_electrical": {
+    "voltage_v": null,
+    "_voltage_note": "Paper discloses operating voltage; exact value pending full-text extraction.",
+    "frequency_ghz": 3.1,
+    "_frequency_note": "+12.7% peak clock over prior generation, reported as ~3.1 GHz at the May ISCAS keynote; V2 paper may refine.",
+    "power_w": null,
+    "_power_note": "Paper discloses measured power consumption; exact value pending full-text extraction.",
+    "area_mm2": null,
+    "_area_note": "Paper discloses chip area; exact value pending full-text extraction.",
+    "power_density_w_mm2": null,
+    "_power_density_note": "Paper discloses power density; exact value pending full-text extraction. This is the key input for thermal what-if analysis."
+  },
+  "claimed_density": {
+    "transistor_density_mtr_mm2": 238.0,
+    "_density_note": "+53.5% over prior generation (155 -> 238 MTr/mm^2), vendor-claimed since May ISCAS keynote.",
+    "improvement_pct": 53.5,
+    "layer_transition": "single-layer to double-layer logic"
+  },
+  "claimed_efficiency": {
+    "high_perf_core_efficiency_gain_pct": 41.0,
+    "_efficiency_note": "Vendor-claimed high-performance-core efficiency gain."
+  },
+  "landing_technologies": [
+    "LogicFolding",
+    "hybrid bonding",
+    "TSV",
+    "Unified Bus",
+    "Hi-ONE optical engine"
+  ],
+  "gear_ratio": {
+    "_note": "The V2 paper introduces a 'gear ratio' concept for LogicFolding — a parameter governing the vertical-to-horizontal delay tradeoff. Conceptually related to memo Eq. 2 break-even ratio. Exact formulation pending full-text extraction.",
+    "value": null
+  },
+  "roadmap": {
+    "ascend_ai_target_year": 2030,
+    "_roadmap_note": "Huawei outlines a path for LogicFolding to reach Ascend AI chips by 2030."
+  },
+  "packaging_status": {
+    "chip_name": "Kirin 9050 Pro",
+    "status": "packaging and testing",
+    "expected_launch": "fall 2026",
+    "launch_product": "Mate 90 series"
+  },
+  "broader_3d_context": {
+    "ibm_nanostack": {
+      "announcement": "VLSI 2026",
+      "claim": "sub-1nm nanostack transistor architecture",
+      "logicfolding_specific": false
+    },
+    "samsung_3d_stacked_fet": {
+      "announcement": "VLSI 2026",
+      "claim": "42nm gate-pitch 3D stacked FET",
+      "logicfolding_specific": false
+    }
+  }
+}
