@@ -133,3 +133,39 @@ Kirin 2026 claimed power density, voltage, and frequency numbers have been added
 No equation or verdict change is warranted. The V2 paper provides more detail but not independent verification. The memo's no-action decision stands: self-reported data does not clear the independent-evidence bar. Thermal and yield data remain not yet public. The fall 2026 Kirin 9050 Pro / Mate 90 launch remains the earliest opportunity for Trigger A to fire.
 
 Monitoring current as of 2026-07-03.
+
+---
+
+## 2026-07-27 — status: all triggers OPEN (domestic DUV lithography update)
+
+China has begun limited production of domestic immersion DUV lithography tools. Widely reported and confirmed by multiple outlets; market reaction (ASML pressure) was significant. No trigger fired; the no-action decision stands. Lithography equipment availability is orthogonal to the LogicFolding thesis, which turns on active-on-active stacking physics, not on litho tool supply.
+
+### Timeline
+
+| Date | Event | Sources |
+|------|-------|---------|
+| 2026-07-27 | State-backed firm (reported as **Yuliangsheng / New Kailai**) begins production of domestic **immersion DUV** lithography tools: ~**5 units in 2026**, ramping to ~**20 in 2027**, with deliveries slated for **SMIC, Hua Hong, and CXMT**. Volumes are pilot-scale against fab demand; commentary notes the near-term leverage is reduced dependence on foreign vendors for **maintenance and service** of the installed base as much as new capacity. | The Information / Reuters, confirmed by multiple outlets |
+
+### Scoring
+
+**Trigger A — Shipping teardown: NOT FIRED.**
+No LogicFolding product has shipped or been torn down. DUV tool production is upstream equipment news; it produces no measurement of folded active logic. A remains open and untouched by this development.
+
+**Trigger B — Foundry / PDK disclosure: NOT FIRED.**
+Equipment availability is not a stacking commitment. No SMIC or Hua Hong PDK, design-rule set, or via/bond parasitic disclosure for dual-active-logic stacking accompanies this news. A fab acquiring domestic DUV tools says nothing about whether it will commit to — or disclose data for — active-on-active bonded stacks. B remains open.
+
+**Trigger C — Open reference flow: NOT FIRED.**
+This repository remains the only open reference flow. Litho equipment news has no bearing on C.
+
+### Relevance to the LogicFolding thesis (low, and clarifying)
+
+Direct relevance is low. Immersion DUV supports planar logic production and the base-die side of 2.5D/3D packaging, but the memo's break-even question (Eq. 2), thermal question (Eq. 3), and yield question (§10) live in the bond/via stack and its parasitics — none of which a litho tool addresses. Two clarifying points:
+
+1. **Capability, not EUV.** Domestic DUV at pilot volume narrows the maintenance/service dependence on foreign vendors but does not reach EUV; ASML's EUV moat is intact. The sharp market reaction reads as overreaction relative to the disclosed volumes (5 units in 2026).
+2. **Orthogonal to the thesis.** The LogicFolding no-action decision does not depend on lithography equipment availability in either direction. If anything, the news reinforces the memo's framing: China is assembling adjacent capability while the specific evidence the memo demands — teardown, foundry stacking data, open flow — remains absent.
+
+### Net
+
+No code, equation, or verdict change. This is a semiconductor-landscape datapoint logged for completeness because of its market impact, not because it moves any trigger. All three triggers remain open; the fall 2026 Kirin 9050 Pro / Mate 90 shipment remains the earliest opportunity for Trigger A to fire.
+
+Monitoring current as of 2026-07-27.
