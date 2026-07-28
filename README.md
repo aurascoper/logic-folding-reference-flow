@@ -6,7 +6,7 @@ An open reference flow for evaluating LogicFolding-style 3D-native logic folding
 
 **The source memo lives in [`docs/LogicFolding-No-Action-Decision-Memo.pdf`](./docs/LogicFolding-No-Action-Decision-Memo.pdf)** (16 pages). Equation-by-equation cross-reference to this codebase: [`docs/MEMO_INDEX.md`](./docs/MEMO_INDEX.md).
 
-**Trigger watch:** [`docs/TRIGGER_WATCH.md`](./docs/TRIGGER_WATCH.md) logs public LogicFolding developments — press releases, teardowns, and foundry announcements — and scores each against the memo's three reopen triggers. As of 2026-07-27 (domestic DUV lithography production), none has fired and the no-action decision stands.
+**Trigger watch:** [`docs/TRIGGER_WATCH.md`](./docs/TRIGGER_WATCH.md) logs public LogicFolding developments — press releases, teardowns, and foundry announcements — and scores each against the memo's three reopen triggers. As of 2026-07-27 (domestic DUV lithography production), none has fired and the no-action decision stands. [`docs/SWEEP_RESULTS.md`](./docs/SWEEP_RESULTS.md) records the output of running the Eq. 2 break-even sweep against Huawei's claimed (unverified) Kirin 2026 numbers, so the what-if result is visible without running the code.
 
 **Companion writeup:** [*The Most Useful Semiconductor Paper I Wrote This Year Says Don't Buy It*](https://aurascoper.substack.com/p/the-most-useful-semiconductor-paper) — defensive-due-diligence framing of the memo for the institutional buy-side and boutique semiconductor-analysis audience.
 
