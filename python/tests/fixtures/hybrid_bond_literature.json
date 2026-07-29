@@ -1,0 +1,47 @@
+{
+  "schema": "logic-folding-literature/v0",
+  "_provenance": "Public-literature parasitic values for face-to-face (F2F) hybrid bond contacts. These are OTHER PROCESSES' published numbers — a peer-reviewed design-methodology assumption plus measured bond test structures — NOT Huawei's process data. Citing them does not fire Trigger B (foundry/PDK disclosure for dual-active-logic stacking) or Trigger A (shipping teardown). Their only role is to anchor one corner of the what-if sweep's parasitic bracket to citable sources instead of invented values.",
+  "_access_note": "Values were verified from published excerpts and secondary coverage; primary PDFs (ACM/IEEE/arXiv) were not directly retrievable from the environment that assembled this file. The citations identify the primary sources so a reviewer can verify independently.",
+  "f2f_bond_assumption": {
+    "source": "Hier-3D: A Hierarchical Physical Design Methodology for Face-to-Face-Bonded 3D ICs, ACM ISLPED 2022, DOI 10.1145/3531437.3539702",
+    "kind": "design assumption (peer-reviewed physical-design methodology, not a measurement)",
+    "via_size_um": [0.5, 0.5],
+    "pitch_um": 1.0,
+    "resistance_ohm": 0.5,
+    "capacitance_f": 1.0e-15,
+    "_quote": "In 3D implementations, the F2F via size, pitch, resistance, and capacitance are 0.5 um x 0.5 um, 1.0 um, 0.5 Ohm, and 1 fF, respectively."
+  },
+  "measured_specific_contact_resistance": {
+    "kind": "measured (bonded test structures)",
+    "range_ohm_cm2": [3.2e-10, 1.0e-8],
+    "datapoints": [
+      {
+        "value_ohm_cm2": 1.2e-9,
+        "source": "Low-Temperature Cu/SiO2 Hybrid Bonding with Low Contact Resistance Using (111)-Oriented Cu Surfaces, Materials 15(5):1888, 2022",
+        "note": "Reported as the lowest value for Cu-Cu joints bonded below 300 C at publication."
+      },
+      {
+        "value_ohm_cm2": 3.2e-10,
+        "source": "Efficient Cu/SiO2 hybrid bonding through alkaline surface modification for 3D IC integration, ScienceDirect, 2025"
+      },
+      {
+        "value_ohm_cm2": 1.0e-8,
+        "source": "Bonded-copper-interconnect test structures for 3D integration (order-of-magnitude figure reported across multiple studies)"
+      },
+      {
+        "value_note": "~50 mOhm per connection at 4 um-diameter DBI Cu plugs (implies ~6.3e-9 Ohm-cm2)",
+        "implied_ohm_cm2": 6.3e-9,
+        "source": "Advances toward reliable high density Cu-Cu interconnects by Cu-SiO2 direct hybrid bonding (DBI), 2016"
+      }
+    ]
+  },
+  "consistency_check": {
+    "_note": "Hier-3D's assumed 0.5 Ohm at a 0.5 x 0.5 um bond pad implies a specific contact resistance of 0.5 Ohm x 0.25 um^2 = 0.125 Ohm-um^2 = 1.25e-9 Ohm-cm2 — inside the measured range above. The bond RESISTANCE is therefore not the load-bearing uncertainty. The 1 fF bond CAPACITANCE is: in Eq. 2 the R_drv*C_b term turns each bond contact into roughly R_drv femtoseconds of tax (200 fs at R_drv = 200 Ohm), which dwarfs every resistance-side term. Encoded as a unit test in tests/test_literature_fixture.py."
+  },
+  "context_only": {
+    "_note": "Pitch/density datapoints with no RC content; recorded for context, not consumed by the sweep.",
+    "tsmc_soic_f2f_pitch_um": { "current": 6.0, "roadmap_2029": 4.5, "source": "TSMC SoIC roadmap coverage, 2026" },
+    "imec_w2w_hybrid_bond_pitch_nm": { "demonstrated_2023": 400, "demonstrated_2026": 200, "source": "imec / EV Group press releases (electrical results reported qualitatively as low single-contact resistance)" },
+    "intel_foveros_direct": { "pitch": "sub-10 um", "interconnect_density_wires_mm2": "> 10000", "source": "Intel Foveros Direct public disclosures" }
+  }
+}

@@ -31,6 +31,7 @@ from pathlib import Path
 # -- Path setup: make the package importable when run from the scripts dir ----
 
 _FIXTURE = Path(__file__).resolve().parent.parent / "tests" / "fixtures" / "kirin_2026_claimed.json"
+_LIT_FIXTURE = Path(__file__).resolve().parent.parent / "tests" / "fixtures" / "hybrid_bond_literature.json"
 
 
 def load_claimed_data(path: Path = _FIXTURE) -> dict:
@@ -90,6 +91,26 @@ def run_breakeven_sweep(claimed: dict, verbose: bool = False) -> None:
         ("thermal_stress",dict(r_v=10.0, c_v=0.5e-15, r_b=8.0,  c_b=0.4e-15,  dtau_red_fs=20.0, dtau_thermal_fs=300.0)),
     ]
 
+    # -- Literature-anchored scenario --------------------------------------
+    # The bond-contact RC comes from a published F2F design assumption
+    # (Hier-3D, ACM ISLPED 2022: 0.5 Ohm / 1 fF at a 0.5x0.5 um pad), whose
+    # implied specific contact resistance (1.25e-9 Ohm-cm2) sits inside the
+    # measured Cu-Cu range (3.2e-10 to 1e-8 Ohm-cm2). See the fixture for
+    # citations. The intra-tier via RC and the redundancy/thermal derates
+    # remain undisclosed for any real process, so they stay at this sweep's
+    # "moderate" values — the scenario isolates bond-parasitic provenance,
+    # nothing else. These are still OTHER PROCESSES' published numbers, not
+    # Huawei's: Trigger B remains not fired.
+    lit = json.loads(_LIT_FIXTURE.read_text())
+    bond = lit["f2f_bond_assumption"]
+    scenarios.append(
+        ("literature_bond", dict(
+            r_v=10.0, c_v=0.5e-15,
+            r_b=bond["resistance_ohm"], c_b=bond["capacitance_f"],
+            dtau_red_fs=20.0, dtau_thermal_fs=15.0,
+        ))
+    )
+
     # -- Path ensemble: bimodal local/global, matching memo §7 stratification
     # Local paths: short, low savings (most paths in a real design)
     # Global paths: long, high savings (the critical-path subset)
@@ -138,8 +159,8 @@ def run_breakeven_sweep(claimed: dict, verbose: bool = False) -> None:
         l_pass = sum(1 for d in local_decisions if d.label == DecisionLabel.PASS)
 
         print(f"Scenario: {name}")
-        print(f"  Via/bond RC: r_v={params_dict['r_v']:.0f}Ω c_v={params_dict['c_v']*1e15:.1f}fF"
-              f"  r_b={params_dict['r_b']:.0f}Ω c_b={params_dict['c_b']*1e15:.1f}fF")
+        print(f"  Via/bond RC: r_v={params_dict['r_v']:g}Ω c_v={params_dict['c_v']*1e15:g}fF"
+              f"  r_b={params_dict['r_b']:g}Ω c_b={params_dict['c_b']*1e15:g}fF")
         print(f"  Δτ_red={params_dict['dtau_red_fs']:.0f}fs  Δτ_T={params_dict['dtau_thermal_fs']:.0f}fs")
         print(f"  PASS: {n_pass:>5} ({100*n_pass/len(paths):.1f}%)  "
               f"FAIL: {n_fail:>5} ({100*n_fail/len(paths):.1f}%)  "
@@ -183,6 +204,14 @@ def run_breakeven_sweep(claimed: dict, verbose: bool = False) -> None:
     print("   that Huawei has NOT disclosed (Trigger B has not fired). The")
     print("   sweep range above brackets the plausible space; the real answer")
     print("   requires PDK data.")
+    print()
+    print("4. The literature_bond scenario anchors the bond contact to a")
+    print("   published F2F assumption (Hier-3D, ISLPED 2022: 0.5 Ohm / 1 fF)")
+    print("   that is consistent with measured Cu-Cu contact resistance. Its")
+    print("   resistance is BELOW this sweep's optimistic corner while its")
+    print("   capacitance is above the pessimistic one — the published corner")
+    print("   is low-R / high-C, which the R_drv*C_b term punishes. Bond")
+    print("   capacitance, not bond resistance, is the decisive parasitic.")
     print()
     print("CONCLUSION: Even if Huawei's claimed Kirin 2026 numbers are taken")
     print("at face value, the break-even inequality still requires measured")

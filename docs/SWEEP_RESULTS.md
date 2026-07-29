@@ -1,8 +1,8 @@
 # Sweep results: what-if analysis of Huawei's claimed Kirin 2026 data
 
-**Run date:** 2026-07-28
+**Run date:** 2026-07-29
 **Script:** [`python/scripts/kirin_2026_whatif.py`](../python/scripts/kirin_2026_whatif.py)
-**Fixture:** [`python/tests/fixtures/kirin_2026_claimed.json`](../python/tests/fixtures/kirin_2026_claimed.json)
+**Fixtures:** [`python/tests/fixtures/kirin_2026_claimed.json`](../python/tests/fixtures/kirin_2026_claimed.json) (claimed inputs), [`python/tests/fixtures/hybrid_bond_literature.json`](../python/tests/fixtures/hybrid_bond_literature.json) (literature-anchored bond parasitics)
 
 This document records the output of running the break-even sweep against Huawei's claimed Kirin 2026 numbers, so a reader can see the result without cloning and running the code. It is a **what-if analysis, not evidence**: every input number is vendor self-reported (Tau Scaling Law V2 paper, He Tingbo, 2026-07-03), not an independent measurement. The conditional being evaluated is: *if these claimed numbers are accurate, what would the break-even inequality (memo §7, Eq. 2) show?*
 
@@ -22,18 +22,25 @@ From the claimed fixture (all self-reported, status `NOT VERIFIED`):
 | Transistor density | 238.0 MTr/mm² |
 | Efficiency gain | +41% |
 
-Synthetic path ensemble: 10,000 paths, 8% global / 92% local — the memo §7 right-tail structure. Because Huawei has disclosed no via/bond RC values (Trigger B has not fired), the sweep brackets the parasitic space with four scenarios rather than asserting one.
+Synthetic path ensemble: 10,000 paths, 8% global / 92% local — the memo §7 right-tail structure. Because Huawei has disclosed no via/bond RC values (Trigger B has not fired), the sweep brackets the parasitic space with four constructed scenarios rather than asserting one, plus a fifth whose bond-contact RC is anchored to the public literature (see below).
 
 ## Eq. 2 break-even gate — results by scenario
 
 | Scenario | Via/bond RC (r_v, c_v, r_b, c_b) | Δτ_red / Δτ_T | PASS | Global passing | Local passing |
 |----------|-----------------------------------|----------------|------|----------------|---------------|
-| optimistic | 2 Ω, 0.2 fF, 2 Ω, 0.1 fF | 10 fs / 5 fs | 67.5% | 820/820 (100%) | 5926/9180 (64.6%) |
+| optimistic | 2 Ω, 0.2 fF, 1.5 Ω, 0.15 fF | 10 fs / 5 fs | 67.5% | 820/820 (100%) | 5926/9180 (64.6%) |
 | moderate | 10 Ω, 0.5 fF, 8 Ω, 0.4 fF | 20 fs / 15 fs | 17.8% | 820/820 (100%) | 964/9180 (10.5%) |
 | pessimistic | 25 Ω, 1.0 fF, 20 Ω, 0.8 fF | 50 fs / 100 fs | 7.5% | 749/820 (91.3%) | 0/9180 (0%) |
 | thermal_stress | 10 Ω, 0.5 fF, 8 Ω, 0.4 fF | 20 fs / 300 fs | 8.1% | 812/820 (99.0%) | 0/9180 (0%) |
+| literature_bond | 10 Ω, 0.5 fF, **0.5 Ω, 1.0 fF** | 20 fs / 15 fs | 17.8% | 816/820 (99.5%) | 964/9180 (10.5%) |
 
-Marginal paths omitted from the table (7.2% optimistic, 4.1% moderate, ≈0% elsewhere); full breakdown in the script output.
+Marginal paths omitted from the table (7.2% optimistic, 4.1% moderate and literature_bond, ≈0% elsewhere); full breakdown in the script output.
+
+## The literature-anchored scenario
+
+The four constructed scenarios bracket a parasitic space Huawei has left undisclosed — their values are deliberate inventions. The fifth scenario replaces the invented **bond-contact** RC with a published figure: the Hier-3D physical-design methodology (ACM ISLPED 2022, DOI [10.1145/3531437.3539702](https://dl.acm.org/doi/10.1145/3531437.3539702)) assumes an F2F via of 0.5 × 0.5 µm at 1.0 µm pitch with **0.5 Ω and 1 fF**. That assumption is not generous relative to measurement: 0.5 Ω over a 0.25 µm² pad implies a specific contact resistance of 1.25 × 10⁻⁹ Ω·cm², inside the measured Cu–Cu hybrid-bonding range (3.2 × 10⁻¹⁰ to 1 × 10⁻⁸ Ω·cm²; sources cited in the fixture). The intra-tier via RC and the Δτ_red/Δτ_T derates stay at the moderate values — no literature figure was pinned for those, so the scenario isolates bond-contact provenance and nothing else. The consistency claim is enforced as a unit test ([`python/tests/test_literature_fixture.py`](../python/tests/test_literature_fixture.py)).
+
+The instructive part is *where* the published corner sits: its resistance is below this sweep's optimistic corner while its capacitance is above the pessimistic one — low-R / high-C. Eq. 2 punishes exactly the C side: the R_drv·C_b charging term turns each 1 fF bond contact into ~200 fs of tax, so the outcome (17.8% pass, converging on the global tail) matches the moderate scenario despite bond resistance being 16× lower. Bond capacitance, not bond resistance, is the decisive parasitic — and none of the published values are Huawei's process data, so Trigger B remains not fired.
 
 ## Reading the table
 
