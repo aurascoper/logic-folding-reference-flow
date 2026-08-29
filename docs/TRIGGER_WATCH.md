@@ -169,3 +169,44 @@ Direct relevance is low. Immersion DUV supports planar logic production and the 
 No code, equation, or verdict change. This is a semiconductor-landscape datapoint logged for completeness because of its market impact, not because it moves any trigger. All three triggers remain open; the fall 2026 Kirin 9050 Pro / Mate 90 shipment remains the earliest opportunity for Trigger A to fire.
 
 Monitoring current as of 2026-07-27.
+
+---
+
+## 2026-08-29 — status: all triggers OPEN (launch-date corroboration + Liao Heng interview)
+
+Two developments this window, neither of which fires a trigger: (1) the Mate 90 / Kirin 9050 Pro launch window has narrowed to a specific date — tentatively **September 23, 2026** — via event-registration corroboration and multiple converging leaks, not an official Huawei confirmation; and (2) Huawei Chief Semiconductor Scientist **Liao Heng** gave a rare long-form interview explicitly pre-announcing that third-party teardowns of the new chip are coming and inviting the scrutiny. The memo's no-action decision stands: an announcement is not a measurement, and a pre-announcement of scrutiny is not the scrutiny itself.
+
+### Timeline
+
+| Date | Event | Sources |
+|------|-------|---------|
+| 2026-08-11→14 | **Mate 90 launch date converges on Sept 23, 2026.** Weibo tipster "SuperDimensional" tentatively pencils in Sept 23 ([Huawei Central](https://www.huaweicentral.com/huawei-mate-90-series-launch-tentatively-set-for-september-23/)); an entertainment/performance approval document from China's Ministry of Culture and Tourism for the "Huawei Terminal launch event" independently points to the same date ([36kr/Lei Tech](https://eu.36kr.com/en/p/3938660455159427)) — public government records long used to infer event dates, but "strictly speaking, this is not an official statement from Huawei." Leaks split between Sept 22 and Sept 29 as alternates. | Huawei Central, 36kr, IntoMobile |
+| 2026-07 (recorded), 2026-08 (viral) | **Liao Heng four-hour interview** (business podcast, viral in August; [SCMP](https://www.scmp.com/tech/big-tech/article/3362960/top-huawei-chip-scientist-opens-strategy-blind-arrogance-and-his-war-hero-mindset), [Techmeme](https://x.com/Techmeme/status/2084592888567259187)). On the new chip: "It should be released in the autumn. Because there are plenty of outfits like SemiAnalysis and TechInsights that will certainly do reverse engineering, you will see a lot of analysis reports come out, and you will be able to see whether the so-called Tau Scaling Law, stacking, and logic folding can actually solve — or narrow — the generational gap. My answer is: to a large extent, yes." Name-checks the exact teardown firms the memo's Trigger A contemplates. | [Full transcript (CambrianR)](https://cambrianr.substack.com/p/transcript-of-an-interview-with-huaweis), SCMP |
+
+### Why the launch-date news is thinner than it looks
+
+The **fall 2026 Mate 90 / Kirin 9050 Pro launch window was already claimed by Huawei in May** (ISCAS keynote — "first commercial LogicFolding part, shipping this fall in the Mate 90 series," logged 2026-05-29). What is net-new this window is only the *narrowing of the window to a specific date*, and that narrowing rests on a tipster plus an event-performance approval document — neither is a Huawei press release. Several August reports also repeat the May-keynote figure set (+53.5% density → 238 MTr/mm², −41% power at matched performance, ~3.1 GHz) and a "chip has entered packaging and testing" status (already logged 2026-07-03) as if new; they restate, rather than advance, the disclosed record. No new measurements, no die area, no package power figure, no supplier disclosure accompanied the date news.
+
+### Scoring
+
+**Trigger A — Shipping teardown: PARTIAL MOVEMENT, NOT FIRED.**
+Nothing has shipped; there is no teardown. Two incremental movements: (a) the expected launch date is now tentatively Sept 23 — event registration corroboration gives it more weight than a tipster alone, but it remains unconfirmed and slippage would be unsurprising; (b) the **Liao Heng interview raises Trigger A's prior weight**: the executive explicitly predicts that SemiAnalysis/TechInsights-class firms will publish reverse-engineering reports in the autumn and stakes Huawei's claim on the outcome ("My answer is: to a large extent, yes"). This is the first time a named-Huawei executive has pre-committed to third-party inspection — it makes the absence of a teardown *after* launch more conspicuous, and gives the eventual teardown reports a specific claim set to check. It remains a pre-announcement of scrutiny, not the scrutiny. A remains open.
+
+**Trigger B — Foundry / PDK disclosure: NOT FIRED.**
+The interview describes an "upstream" manufacturing chain in vague, multi-floor-metaphor terms but names no foundry partner, no node, no via/bond parasitic data, no yield figure, and no auditable data-rights commitment. B remains open and unchanged.
+
+**Trigger C — Open reference flow: NOT FIRED.**
+This repository remains the only open reference flow. Neither the launch-date reporting nor the interview discloses any Huawei-side open flow. C remains open.
+
+### Teardown checklist (added by the interview)
+
+Liao Heng's transcript explicitly stakes the claim on what teardowns can measure. Additions to the standing checklist when Trigger A fires (1. measured sustained thermal; 2. fraction of logic actually folded; 3. stacked-die yield / inter-wafer variation):
+
+4. **Verify the +53.5%/238 MTr/mm² density claim against die area and layer count** — the claimed −37.5% area reduction implies a concrete die size; it is checkable against die shots.
+5. **Load the "narrowing the gap" claim onto sustained (not burst) workloads** — Liao's "to a large extent, yes" is a claim about sustained generational-gap narrowing, which is exactly what memo §8 says burst measurements cannot establish.
+
+### Net
+
+No code, equation, or verdict change. The launch-date narrowing and the interview are pre-firing developments: they make the fall 2026 Trigger-A opportunity more concrete (expected teardown reports Oct–Nov 2026 if the Sept 23 date holds) without producing any independent measurement. The memo's `NO TRADE / NO ALLOCATION / NO ENGINEERING ADOPTION` stands.
+
+Monitoring current as of 2026-08-29.
