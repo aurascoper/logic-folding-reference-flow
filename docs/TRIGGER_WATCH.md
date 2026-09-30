@@ -8,6 +8,8 @@ A dated log of public LogicFolding / Tau-Scaling developments, each scored again
 
 Scoring is deliberately conservative. A development advances toward a trigger without firing it; only the firing condition flips the verdict.
 
+A date or figure enters scoring only after a vendor statement or an independent measurement. Two weak sources that agree count as one weak source. (Rule added 2026-09-30, after the Sept 23 launch date failed; see that entry.)
+
 ---
 
 ## 2026-05-29 — status: all triggers OPEN
@@ -210,3 +212,60 @@ Liao Heng's transcript explicitly stakes the claim on what teardowns can measure
 No code, equation, or verdict change. The launch-date narrowing and the interview are pre-firing developments: they make the fall 2026 Trigger-A opportunity more concrete (expected teardown reports Oct–Nov 2026 if the Sept 23 date holds) without producing any independent measurement. The memo's `NO TRADE / NO ALLOCATION / NO ENGINEERING ADOPTION` stands.
 
 Monitoring current as of 2026-08-29.
+
+---
+
+## 2026-09-30 — status: all triggers OPEN (Kirin 9050 Pro shipped; enthusiast teardown; Bernstein note)
+
+The Kirin 9050 Pro shipped on 2026-09-07 in the Mate XT2 trifold, not in the Mate 90. It is the first commercial LogicFolding part. The one teardown is an enthusiast livestream, and it measures nothing the memo needs.
+
+Bernstein's note is the strongest external validation to date, and it is still analyst estimation on a burst benchmark. Twenty-three days after shipment, no TechInsights or SemiAnalysis report on the 9050 Pro exists. No trigger fired. The no-action decision stands.
+
+### Timeline
+
+| Date | Event | Sources |
+|------|-------|---------|
+| 2026-09-07 | **Kirin 9050 Pro launches in the Mate XT2.** Vendor claims: 238 MTr/mm² (+53.5% from 155; outlets round to +55%), 9-core "1+2+4+2" CPU, 3.1 GHz, +24% single-core, +52% multi-core, +142% ray-tracing render. Claimed power at matched performance: NPU −66%, GPU −58%, CPU performance cores −41%. The SMIC N+3 attribution comes from Digitimes and Bernstein, not from Huawei. Sales began 09-12. | [Tech Times](https://www.techtimes.com/articles/326836/20260907/huawei-kirin-9050-pro-launches-logicfolding-moves-roadmap-silicon.htm), [Digitimes](https://www.digitimes.com/news/a20260908VL200/huawei-kirin-npu-transistor-performance.html) (paywalled), [KrASIA](https://kr-asia.com/huawei-mate-xt-2-debuts-kirin-9050-pro-built-on-tau-scaling-technology) |
+| 2026-09-07→09 | **Enthusiast teardown.** Blogger Yang Changshun (杨长顺) tore down a Mate XT2 on a launch-night livestream. Silkscreen reads "HISILICON Hi36E0" and "2035-CN02". The 1+2+4+2 layout is reported. No die imaging, no parasitics, no thermal data, no yield. | [Sina Finance, 09-09](https://finance.sina.com.cn/tech/discovery/2026-09-09/doc-iniraith9715124.shtml), [Bilibili](https://www.bilibili.com/video/BV1eCb563ENm/) |
+| 2026-09-08 | **Revises the 2026-07-27 figure.** Domestic DUV target is now 12 systems by end-2026, with Huawei backing. The 2026-07-27 entry logged ~5 units in 2026; the 12 supersedes it. Testing runs at SMIC and on Huawei lines. Prototypes still use foreign projection lenses and light sources. | [TrendForce](https://www.trendforce.com/news/2026/09/08/news-huawei-reportedly-backs-chinas-duv-drive-with-12-systems-targeted-by-end-2026-smic-testing-underway/) (citing FT; FT not read directly), [TNW](https://thenextweb.com/news/huawei-china-duv-lithography-yuliangsheng-zeiss-lenses) |
+| 2026-09-22→23 | **Bernstein note.** Gap to Apple narrowed to ~3 years from 4. The 9050 Pro beat the A17 Pro in Geekbench 6 multi-core and trails the A20 Pro by ~30%. Node estimate: SMIC N+2 or N+3. Bernstein's word is "underappreciated". A yield and thermal caveat appears only in IndexBox's paraphrase. | [Seoul Economic Daily](https://en.sedaily.com/international/2026/09/23/huawei-narrows-chip-gap-with-apple-to-three-years-without), [Pandaily](https://pandaily.com/bernstein-kirin-9050-pro-multicore-a17-pro-tau-scaling), [SCMP](https://www.scmp.com/tech/tech-trends/article/3368404/chinas-huawei-trims-mobile-chip-gap-apple-tau-scaling-law-pays-bernstein) (search snippet only), [IndexBox](https://www.indexbox.io/blog/huawei-kirin-9050-pro-narrows-gap-to-apple-chips-to-three-years-bernstein-says/) |
+| 2026-09-29 | **Mate 90 date official.** Huawei's Weibo account announced the launch for 2026-10-01 10:00, sales from 12:08. Reported chip split, not confirmed by Huawei: Mate 90 on Kirin 9030, Pro on 9035, Pro Max and RS on 9050 Pro. | [GSMArena](https://www.gsmarena.com/huawei_starts_teasing_the_mate90_series_and_reveals_the_launch_date_while_teleconverter_leaks-news-74820.php), [IT之家](https://www.ithome.com/1/008/093.htm) |
+| 2026-09-30 | **Wuhan 3D packaging line.** Hubei Xingchen Technology (湖北星辰技术) brought its Phase II line online in Wuhan's Optics Valley. It is described as China's first domestic 3D advanced packaging mass-production line and as a pilot platform. Combined investment is over 7 billion yuan. | [IT之家](https://www.ithome.com/1/008/799.htm), [SMM](https://news.metal.com/newscontent/104142861-chinas-first-3d-advanced-packaging-mass-production-line-goes-live-in-optics-valley) |
+
+### Two corrections to this log
+
+1. **First shipping product.** Every entry since 2026-05-29 said the first LogicFolding part ships in the Mate 90 series. It shipped in the Mate XT2, 24 days before the Mate 90 launch date.
+2. **Launch date.** The 2026-08-29 entry scored Sept 23 as corroborated. The evidence was a Weibo tipster and a Ministry of Culture and Tourism event-approval filing. Two weak sources agreed, and the agreement added no information. Huawei's own date is Oct 1. The weak-source rule in this file's preamble comes from this error.
+
+### Background not previously logged
+
+TechInsights confirmed SMIC N+3 in the prior-generation Kirin 9030 Pro on [2025-12-18](https://www.techinsights.com/blog/huawei-mate-80-pro-max-teardown-confirms-kirin-9030-pro-smic-n3). On [2025-12-11](https://www.techinsights.com/blog/smic-n3-confirmed-kirin-9030-analysis-reveals-how-close-smic-5nm) it called N+3 "significantly less scaled" than TSMC and Samsung 5 nm. Both predate this log. Neither measures the 9050 Pro or any bonded stack.
+
+### Excluded as unsourced
+
+These claims circulated but no fetched source supports them. They are not scored.
+
+- A 2026-09-19 TechInsights report of ~20% SMIC N+3 yield. No such item was found, and one other report gave ~33%. It would be planar node yield in either case, not bonded-stack yield.
+- Hyperthreading on the 9050 Pro's non-little cores.
+- A Huawei statement that the 9050 Pro package is thicker than prior Kirin flagships. If sourced, this is checklist item 6: package Z-height, relevant to the thermal path.
+
+### Scoring
+
+**Trigger A — Shipping teardown: PARTIAL MOVEMENT, NOT FIRED.**
+The product shipped. A photograph confirms the package markings. No one has measured R_v, C_v, R_b or C_b. There is no sustained-thermal data and no stacked-die yield.
+
+Bernstein's multi-core result is a burst benchmark, and memo §8 says burst scores are not investment evidence. Liao Heng said in August that TechInsights and SemiAnalysis would publish. Twenty-three days after shipment, neither has. That absence is now the conspicuous fact.
+
+The teardown checklist stands. Items 1 to 3 come from the May entries: sustained thermal, fraction of logic folded, stacked-die yield and inter-wafer variation. Items 4 and 5 come from 2026-08-29: density against die area and layer count, and the gap claim under sustained load.
+
+**Trigger B — Foundry / PDK disclosure: NOT FIRED.**
+No foundry has committed to dual-active-logic stacking with auditable data rights. The Wuhan line adds packaging capacity. It discloses no via or bond parasitics. B remains open.
+
+**Trigger C — Open reference flow: NOT FIRED.**
+No other open flow for 3D partitioning on a public PDK has appeared. Trigger C remains open.
+
+### Net
+
+No code or equation change. The claimed fixture's `packaging_status` now records the shipment. The memo's `NO TRADE / NO ALLOCATION / NO ENGINEERING ADOPTION` stands. The next material event is a TechInsights or SemiAnalysis teardown of the 9050 Pro, from either the Mate XT2 or the Mate 90 Pro Max.
+
+Monitoring current as of 2026-09-30.

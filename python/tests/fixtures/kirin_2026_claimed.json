@@ -45,9 +45,9 @@
   },
   "packaging_status": {
     "chip_name": "Kirin 9050 Pro",
-    "status": "packaging and testing",
-    "expected_launch": "fall 2026",
-    "launch_product": "Mate 90 series"
+    "status": "shipping",
+    "launch_product": "Mate XT2 (2026-09-07); Mate 90 Pro Max (announced for 2026-10-01)",
+    "_status_note": "Updated 2026-09-30. Earlier value was 'packaging and testing', expected fall 2026 in the Mate 90 series. See docs/TRIGGER_WATCH.md 2026-09-30."
   },
   "broader_3d_context": {
     "ibm_nanostack": {
