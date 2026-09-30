@@ -247,7 +247,7 @@ These claims circulated but no fetched source supports them. They are not scored
 
 - A 2026-09-19 TechInsights report of ~20% SMIC N+3 yield. No such item was found, and one other report gave ~33%. It would be planar node yield in either case, not bonded-stack yield.
 - Hyperthreading on the 9050 Pro's non-little cores.
-- A Huawei statement that the 9050 Pro package is thicker than prior Kirin flagships. If sourced, this is checklist item 6: package Z-height, relevant to the thermal path.
+- A Huawei statement that the 9050 Pro package is thicker than prior Kirin flagships. No statement from Huawei or an executive was found. One outlet, [PCPOP via NetEase](https://www.163.com/dy/article/L6CPADOM05128A8R.html) (2026-09-09), says the chip is "slightly thicker" (稍厚) than the prior generation. The outlet attributes this to "the teardown" and gives no figure. It is recorded here and not scored.
 
 ### Scoring
 
@@ -257,6 +257,8 @@ The product shipped. A photograph confirms the package markings. No one has meas
 Bernstein's multi-core result is a burst benchmark, and memo §8 says burst scores are not investment evidence. Liao Heng said in August that TechInsights and SemiAnalysis would publish. Twenty-three days after shipment, neither has. That absence is now the conspicuous fact.
 
 The teardown checklist stands. Items 1 to 3 come from the May entries: sustained thermal, fraction of logic folded, stacked-die yield and inter-wafer variation. Items 4 and 5 come from 2026-08-29: density against die area and layer count, and the gap claim under sustained load.
+
+Item 6 is new in the 2026-09-30 entry: package and die height against the Kirin 9030 Pro. One outlet reports the new package as slightly thicker, with no figure. Stack height changes the heat path of the die farther from the cooling surface.
 
 **Trigger B — Foundry / PDK disclosure: NOT FIRED.**
 No foundry has committed to dual-active-logic stacking with auditable data rights. The Wuhan line adds packaging capacity. It discloses no via or bond parasitics. B remains open.
