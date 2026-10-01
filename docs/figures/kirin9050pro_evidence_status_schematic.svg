@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <defs>
+    <style>
+      .bg { fill:#ffffff; }
+      .line { stroke:#cbd5e1; stroke-width:2; }
+      .panel { fill:#f8fafc; stroke:#cbd5e1; stroke-width:2; }
+      .known { fill:#ecfdf5; stroke:#86efac; stroke-width:2; }
+      .claimed { fill:#fff7ed; stroke:#fdba74; stroke-width:2; }
+      .accent { fill:#eff6ff; stroke:#93c5fd; stroke-width:2; }
+      .title { font:700 46px Arial, sans-serif; fill:#0f172a; }
+      .subtitle { font:600 24px Arial, sans-serif; fill:#334155; }
+      .h2 { font:700 26px Arial, sans-serif; fill:#0f172a; }
+      .h3 { font:700 20px Arial, sans-serif; fill:#0f172a; }
+      .body { font:400 18px Arial, sans-serif; fill:#334155; }
+      .small { font:400 15px Arial, sans-serif; fill:#475569; }
+      .tiny { font:400 13px Arial, sans-serif; fill:#64748b; }
+      .mono { font:600 16px monospace; fill:#1e293b; }
+      .num { font:700 18px Arial, sans-serif; fill:#0f172a; }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1600" height="1000"/>
+  <text class="title" x="70" y="78">Kirin 9050 Pro: what is known, claimed, and still unverified</text>
+  <text class="subtitle" x="70" y="116">Evidence-status schematic for the September 30, 2026 snapshot</text>
+  <rect x="70" y="142" width="1460" height="72" rx="14" fill="#fff1f2" stroke="#fda4af" stroke-width="2"/>
+  <text class="h3" x="92" y="172">Important:</text>
+  <text class="body" x="205" y="172">This is not a die map, package cross-section, or layer reconstruction.</text>
+  <text class="body" x="92" y="199">No qualifying teardown has established the Kirin 9050 Pro's physical layer structure, interconnect parasitics, sustained thermal behavior, yield, or cost.</text>
+
+  <rect class="panel" x="70" y="250" width="440" height="540" rx="18"/>
+  <text class="h2" x="95" y="292">Observed or first-party facts</text>
+  <rect class="known" x="95" y="320" width="390" height="92" rx="16"/>
+  <text class="h3" x="115" y="350">Product shipment</text>
+  <text class="body" x="115" y="379">Kirin 9050 Pro shipped in the Mate XT2</text>
+  <text class="small" x="115" y="401">Sept. 7, 2026; sales began Sept. 12.</text>
+  <rect class="known" x="95" y="430" width="390" height="104" rx="16"/>
+  <text class="h3" x="115" y="460">Enthusiast teardown observations</text>
+  <text class="body" x="115" y="489">Package markings: Hi36E0, 2035-CN02</text>
+  <text class="small" x="115" y="514">Reported thicker package; no die imaging or cross-section.</text>
+  <rect class="known" x="95" y="552" width="390" height="105" rx="16"/>
+  <text class="h3" x="115" y="582">CPU configuration</text>
+  <text class="mono" x="115" y="610">1 + 2 + 4 + 2</text>
+  <text class="small" x="115" y="633">Reported CPU core grouping; not a physical layer count.</text>
+  <rect class="known" x="95" y="675" width="390" height="90" rx="16"/>
+  <text class="h3" x="115" y="705">Mate 90 Pro Max</text>
+  <text class="body" x="115" y="734">Richard Yu identified the Pro Max as</text>
+  <text class="body" x="115" y="758">using the Kirin 9050 Pro at launch.</text>
+
+  <rect class="panel" x="545" y="250" width="510" height="540" rx="18"/>
+  <text class="h2" x="570" y="286">LogicFolding claim:</text>
+  <text class="h2" x="570" y="314">conceptual path-time tradeoff</text>
+  <text class="small" x="570" y="340">Conceptual only. Not a reconstruction of the Kirin 9050 Pro.</text>
+  <text class="h3" x="575" y="382">Planar critical path</text>
+  <rect x="585" y="406" width="100" height="58" rx="10" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/>
+  <rect x="885" y="406" width="100" height="58" rx="10" fill="#e2e8f0" stroke="#94a3b8" stroke-width="2"/>
+  <text class="small" x="610" y="441">Logic A</text>
+  <text class="small" x="910" y="441">Logic B</text>
+  <line x1="690" y1="435" x2="880" y2="435" stroke="#64748b" stroke-width="6" marker-end="url(#arrow)"/>
+  <text class="small" x="732" y="418">long horizontal wire</text>
+  <text class="body" x="610" y="494">Delay includes long-wire RC.</text>
+  <text class="h3" x="575" y="535">Folded critical path, concept</text>
+  <rect x="640" y="560" width="150" height="60" rx="10" fill="#dbeafe" stroke="#60a5fa" stroke-width="2"/>
+  <rect x="640" y="680" width="150" height="60" rx="10" fill="#dbeafe" stroke="#60a5fa" stroke-width="2"/>
+  <text class="small" x="689" y="596">Logic A</text>
+  <text class="small" x="689" y="716">Logic B</text>
+  <line x1="715" y1="624" x2="715" y2="674" stroke="#2563eb" stroke-width="7" marker-end="url(#arrowBlue)"/>
+  <text class="small" x="805" y="582">Potential benefit:</text>
+  <text class="body" x="805" y="608">shorter horizontal path</text>
+  <text class="small" x="805" y="652">Unresolved tax:</text>
+  <text class="body" x="805" y="678">vertical via / bond RC</text>
+  <text class="body" x="805" y="704">+ thermal derating</text>
+  <rect class="accent" x="575" y="740" width="450" height="42" rx="10"/>
+  <text class="small" x="590" y="758">The thesis turns on measured path-time and thermal behavior,</text>
+  <text class="small" x="590" y="777">not density alone.</text>
+
+  <rect class="panel" x="1090" y="250" width="440" height="540" rx="18"/>
+  <text class="h2" x="1115" y="292">Still unresolved by qualifying teardown</text>
+  <text class="small" x="1115" y="318">These are the six pre-committed scoring dimensions.</text>
+  <circle cx="1132" cy="360" r="12" fill="#fff" stroke="#94a3b8" stroke-width="3"/><text class="num" x="1127" y="366">1</text><text class="body" x="1160" y="366">Die area and layer count</text>
+  <circle cx="1132" cy="414" r="12" fill="#fff" stroke="#94a3b8" stroke-width="3"/><text class="num" x="1127" y="420">2</text><text class="body" x="1160" y="420">Bond / interconnect parasitics</text>
+  <circle cx="1132" cy="468" r="12" fill="#fff" stroke="#94a3b8" stroke-width="3"/><text class="num" x="1127" y="474">3</text><text class="body" x="1160" y="474">Sustained thermal behavior</text>
+  <circle cx="1132" cy="522" r="12" fill="#fff" stroke="#94a3b8" stroke-width="3"/><text class="num" x="1127" y="528">4</text><text class="body" x="1160" y="528">Fraction of logic folded</text>
+  <circle cx="1132" cy="576" r="12" fill="#fff" stroke="#94a3b8" stroke-width="3"/><text class="num" x="1127" y="582">5</text><text class="body" x="1160" y="582">Bonded-stack yield consequences</text>
+  <circle cx="1132" cy="630" r="12" fill="#fff" stroke="#94a3b8" stroke-width="3"/><text class="num" x="1127" y="636">6</text><text class="body" x="1160" y="636">Cost consequences</text>
+  <rect class="claimed" x="1115" y="675" width="390" height="90" rx="16"/>
+  <text class="h3" x="1135" y="705">Vendor claims are not measurements</text>
+  <text class="small" x="1135" y="733">Huawei claims higher density, efficiency, and clock.</text>
+  <text class="small" x="1135" y="755">Those remain self-reported until independently measured.</text>
+
+  <text class="h2" x="70" y="845">Current evidence ladder</text>
+  <rect x="70" y="875" width="300" height="62" rx="12" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+  <text class="h3" x="94" y="903">1. Vendor claim</text><text class="small" x="94" y="926">Huawei V2 paper / launch statements</text>
+  <line x1="370" y1="906" x2="405" y2="906" class="line" marker-end="url(#arrow)"/>
+  <rect x="415" y="875" width="300" height="62" rx="12" fill="#ecfdf5" stroke="#86efac" stroke-width="2"/>
+  <text class="h3" x="439" y="903">2. Enthusiast teardown</text><text class="small" x="439" y="926">Package ID and configuration only</text>
+  <line x1="715" y1="906" x2="750" y2="906" class="line" marker-end="url(#arrow)"/>
+  <rect x="760" y="875" width="300" height="62" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+  <text class="h3" x="784" y="903">3. Analyst estimate</text><text class="small" x="784" y="926">Burst benchmarks / process inference</text>
+  <line x1="1060" y1="906" x2="1095" y2="906" class="line" marker-end="url(#arrow)"/>
+  <rect x="1105" y="875" width="425" height="62" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="2"/>
+  <text class="h3" x="1129" y="903">4. Qualifying independent teardown</text><text class="small" x="1129" y="926">Not yet available as of the Sept. 30 snapshot</text>
+  <line x1="70" y1="958" x2="1530" y2="958" class="line"/>
+  <text class="tiny" x="70" y="982">Sources: Huawei Tau Scaling Law V2 paper (2026-07-03); Sina Finance enthusiast-teardown report (2026-09-09); Bilibili launch-night teardown; logic-folding-reference-flow/docs/TRIGGER_WATCH.md and TEARDOWN_WATCH.md.</text>
+</svg>
