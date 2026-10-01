@@ -25,12 +25,14 @@ The historical trigger log also tracks **package/die height** and the **gap-narr
 
 ## Pre-committed outcomes
 
+**Outcome precedence:** evaluate the memo's formal Trigger A condition first. If the evidence establishes folded active logic with measured sustained thermal and path-time behavior, select **Full resolution** regardless of how many of the six dimensions are resolved. Only if Trigger A is not satisfied do the dimension-count states apply. For those states, only **RESOLVED** dimensions count; partial evidence is recorded but does not advance the count.
+
 | Outcome | Rule | Trigger / memo consequence |
 |---|---|---|
-| **Full resolution** | All six dimensions are resolved, and the evidence satisfies the memo's Trigger A requirement for folded active logic with measured sustained thermal and path-time behavior. | **Trigger A fires.** Reopen the memo. |
-| **Substantial partial** | Three or more dimensions are resolved, including at least one of **bond/interconnect parasitics** or **sustained thermal behavior**, but the formal Trigger A condition is not fully satisfied. | Mark Trigger A **near-fire**. Memo remains no-action, but the reopen threshold is close. |
-| **Marginal partial** | One or two dimensions are resolved, commonly die area/layer count alone. | Trigger A remains **partial movement**. No memo change. |
-| **No resolution** | No dimension above is resolved by qualifying evidence. | Log the teardown and the remaining gaps. No scoring change. |
+| **Full resolution** | The evidence satisfies the memo's formal Trigger A requirement for folded active logic with measured sustained thermal and path-time behavior. Resolving all six dimensions is sufficient coverage but is not required for this state. | **Trigger A fires.** Reopen the memo. |
+| **Substantial partial** | Trigger A is not satisfied; three or more dimensions are **RESOLVED**, including at least one of **bond/interconnect parasitics** or **sustained thermal behavior**. | Mark Trigger A **near-fire**. Memo remains no-action, but the reopen threshold is close. |
+| **Marginal partial** | Trigger A is not satisfied; one or two dimensions are **RESOLVED**, commonly die area/layer count alone. | Trigger A remains **partial movement**. No memo change. |
+| **No resolution** | Trigger A is not satisfied and no dimension above is **RESOLVED** by qualifying evidence. | Log the teardown and the remaining gaps. No scoring change. |
 
 Opening a package, confirming a part number, confirming stacked layers, or estimating a process node can be meaningful evidence without being full resolution. Conversely, missing one class of measurement does not erase measurements the report actually made.
 
@@ -39,6 +41,7 @@ Opening a package, confirming a part number, confirming stacked layers, or estim
 Ask these before writing the response:
 
 - What did the authors **measure directly**, and what did they **infer**?
+- Does the report distinguish between information the authors measured and information supplied by the vendor?
 - Do measured die area and density reconcile with Huawei's claims, or contradict them?
 - If the source is vendor-adjacent, what conflict-of-interest surface exists?
 - Is the methodology sufficiently described for another competent analyst to reproduce or audit the result?
