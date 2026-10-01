@@ -8,7 +8,7 @@ A dated log of public LogicFolding / Tau-Scaling developments, each scored again
 
 Scoring is deliberately conservative. A development advances toward a trigger without firing it; only the firing condition flips the verdict.
 
-A date or figure enters scoring only after a vendor statement or an independent measurement. Two weak sources that agree count as one weak source. (Rule added 2026-09-30, after the Sept 23 launch date failed; see that entry.)
+A date or figure enters scoring only after a vendor statement or an independent measurement. Two weak sources that agree count as one weak source. (Rule added 2026-09-30, after the Sept 23 launch date failed; see that entry.)\n\nProfessional teardown evidence is scored against the pre-committed rubric in [`TEARDOWN_WATCH.md`](./TEARDOWN_WATCH.md), written before the next qualifying teardown appears.
 
 ---
 

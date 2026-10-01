@@ -8,7 +8,7 @@ An open reference flow for evaluating LogicFolding-style 3D-native logic folding
 
 **Trigger watch:** [`docs/TRIGGER_WATCH.md`](./docs/TRIGGER_WATCH.md) logs public LogicFolding developments — press releases, teardowns, and foundry announcements — and scores each against the memo's three reopen triggers. As of 2026-09-30 (Kirin 9050 Pro shipped in the Mate XT2 on Sept 7; one enthusiast teardown and a Bernstein note; no professional teardown yet), none has fired and the no-action decision stands. [`docs/SWEEP_RESULTS.md`](./docs/SWEEP_RESULTS.md) records the output of running the Eq. 2 break-even sweep against Huawei's claimed (unverified) Kirin 2026 numbers — including a scenario whose bond-contact parasitics are anchored to published hybrid-bonding literature rather than invented values — so the what-if result is visible without running the code.
 
-**Companion writeup:** [*The Most Useful Semiconductor Paper I Wrote This Year Says Don't Buy It*](https://aurascoper.substack.com/p/the-most-useful-semiconductor-paper) — defensive-due-diligence framing of the memo for the institutional buy-side and boutique semiconductor-analysis audience.
+**Teardown pre-commitment:** [`docs/TEARDOWN_WATCH.md`](./docs/TEARDOWN_WATCH.md) fixes the scoring rubric for the next qualifying Kirin 9050 Pro teardown before that evidence arrives.\n\n**Companion writeup:** [*The Most Useful Semiconductor Paper I Wrote This Year Says Don't Buy It*](https://aurascoper.substack.com/p/the-most-useful-semiconductor-paper) — defensive-due-diligence framing of the memo for the institutional buy-side and boutique semiconductor-analysis audience.
 
 ## Architecture
 
