@@ -30,7 +30,7 @@ The historical trigger log also tracks **package/die height** and the **gap-narr
 | Outcome | Rule | Trigger / memo consequence |
 |---|---|---|
 | **Full resolution** | The evidence satisfies the memo's formal Trigger A requirement for folded active logic with measured sustained thermal and path-time behavior. Resolving all six dimensions is sufficient coverage but is not required for this state. | **Trigger A fires.** Reopen the memo. |
-| **Substantial partial** | Trigger A is not satisfied; three or more dimensions are **RESOLVED**, including at least one of **bond/interconnect parasitics** or **sustained thermal behavior**. | Mark Trigger A **near-fire**. Memo remains no-action, but the reopen threshold is close. |
+| **Substantial partial** | Trigger A is not satisfied; three or more dimensions are **RESOLVED**. | Trigger A remains open and the memo remains no-action. State in the result's Reason field whether the evidence materially narrows the remaining Trigger A gap. |
 | **Marginal partial** | Trigger A is not satisfied; one or two dimensions are **RESOLVED**, commonly die area/layer count alone. | Trigger A remains **partial movement**. No memo change. |
 | **No resolution** | Trigger A is not satisfied and no dimension above is **RESOLVED** by qualifying evidence. | Log the teardown and the remaining gaps. No scoring change. |
 
